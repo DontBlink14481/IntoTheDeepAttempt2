@@ -18,7 +18,6 @@ import java.util.Scanner;
 
 @Config
 @TeleOp
-@Disabled
 public class SaveConfig extends LinearOpMode {
     public static String prefix = Environment.getExternalStorageDirectory().getPath() + "/FIRST/";
     public static String filename = RobotConfigFileManager.stripFileNameExtension(new RobotConfigFileManager().getActiveConfig().getName());
