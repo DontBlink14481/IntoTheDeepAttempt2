@@ -36,7 +36,7 @@ public class Vector {
      * @param theta the direction of the Vector in radians.
      */
     public Vector(double magnitude, double theta) {
-        this(magnitude, theta, true);
+        setComponents(magnitude, theta);
     }
 
     public Vector(double a, double b, boolean polar){
@@ -109,6 +109,24 @@ public class Vector {
     }
 
     /**
+     * This sets the x value.
+     *
+     * @param set the x value
+     */
+    public void setXComponent(double set) {
+        xComponent = set;
+    }
+
+    /**
+     * This sets the y value.
+     *
+     * @param set the y value
+     */
+    public void setYComponent(double set) {
+        yComponent = set;
+    }
+
+    /**
      * Returns the magnitude of this Vector.
      *
      * @return returns the magnitude.
@@ -142,6 +160,15 @@ public class Vector {
      */
     public double getYComponent() {
         return yComponent;
+    }
+
+    /**
+     * This creates a copy of this Vector that points to a new memory location.
+     *
+     * @return returns a deep copy of this Vector
+     */
+    public Vector copy() {
+        return new Vector();
     }
 
     public Vector times(double d){

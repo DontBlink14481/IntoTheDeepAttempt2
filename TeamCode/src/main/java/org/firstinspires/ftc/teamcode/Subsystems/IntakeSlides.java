@@ -8,7 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public class IntakeSlides implements Subsystem {
-    public DcMotorEx slideMotor;
+    public DcMotorEx slideMotorR;
+    public DcMotorEx slideMotorL;
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
     public static double kp = 0.004;
@@ -36,19 +37,29 @@ public class IntakeSlides implements Subsystem {
     }
 
     public IntakeSlides(HardwareMap map, boolean resetEncoder){
-        slideMotor = map.get(DcMotorEx.class, "sm");
-        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotorR = map.get(DcMotorEx.class, "rsm");
+        slideMotorL = map.get(DcMotorEx.class, "lsm");
+        slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        if(resetEncoder) slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(resetEncoder){
+            slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        slideMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 
     public void reset() {
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        slideMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public static double ticksToRad(double ticks) {
@@ -76,7 +87,8 @@ public class IntakeSlides implements Subsystem {
 
     public void setRawPower(double power) {
         rawPower = true;
-        slideMotor.setPower(power);
+        slideMotorR.setPower(power);
+        slideMotorL.setPower(power);
     }
 
     public void toInit() {
@@ -88,7 +100,8 @@ public class IntakeSlides implements Subsystem {
     }
 
     public void runPID() {
-        slideMotor.setPower(pid());
+        slideMotorR.setPower(pid());
+        slideMotorL.setPower(pid());
     }
 
     public void setPosition(double position) {
@@ -101,10 +114,10 @@ public class IntakeSlides implements Subsystem {
     }
 
     public int getRealPosition() {
-        return slideMotor.getCurrentPosition();
+        return slideMotorL.getCurrentPosition();
     }
     public double getAngle() {
-        return ticksToRad(slideMotor.getCurrentPosition());
+        return ticksToRad(slideMotorL.getCurrentPosition());
     }
 
 }

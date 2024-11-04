@@ -4,7 +4,8 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType
-import java.util.*
+import java.util.Arrays
+
 @I2cDeviceType
 @DeviceProperties(
     name = "SparkFun OTOS Corrected",

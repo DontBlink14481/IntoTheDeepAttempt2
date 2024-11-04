@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing.localization;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Vector;
 
@@ -30,10 +32,6 @@ public class Pose {
         setHeading(setHeading);
     }
 
-    public Pose(Vector v, double setHeading){
-        this(v.getXComponent(), v.getYComponent(), setHeading);
-    }
-
     /**
      * This creates a new Pose from x and y inputs. The heading is set to 0.
      *
@@ -44,11 +42,15 @@ public class Pose {
         this(setX, setY, 0);
     }
 
+    public Pose(Vector v, double setHeading){
+        this(v.getXComponent(), v.getYComponent(), setHeading);
+    }
+
     /**
      * This creates a new Pose with no inputs and 0 for all values.
      */
     public Pose() {
-        this(0,0,0);
+        this(0, 0, 0);
     }
 
     /**
@@ -211,5 +213,11 @@ public class Pose {
      */
     public Pose copy() {
         return new Pose(getX(), getY(), getHeading());
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "(" + getX() + ", " + getY() + ", " + Math.toDegrees(getHeading()) + ")";
     }
 }

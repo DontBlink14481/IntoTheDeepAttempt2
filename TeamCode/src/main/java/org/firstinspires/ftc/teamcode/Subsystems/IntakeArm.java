@@ -56,8 +56,6 @@ public class IntakeArm implements Subsystem {
 
     }
 
-
-
     @Override
     public void update() {
     }

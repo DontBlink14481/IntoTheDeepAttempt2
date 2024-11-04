@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Vector;
 
 
@@ -22,7 +23,6 @@ public class Drivebase implements Subsystem {
        drive = new Follower(map);
        drive.setPose(pos);
     }
-
     public Drivebase(HardwareMap map) {
         this(map, new Pose(0, 0, 0));
     }
@@ -37,10 +37,6 @@ public class Drivebase implements Subsystem {
 
     public Follower getDrive() {
         return drive;
-    }
-
-    public void followPath(Path path){
-        drive.followPath(path);
     }
 
     @Override

@@ -56,6 +56,13 @@ public class TeleOpEnhancements extends OpMode {
      */
     @Override
     public void loop() {
+        telemetry.addData("Pose", follower.getPose());
+        telemetry.addData("Velocity", follower.getVelocity());
+        telemetry.addData("Follower", follower.getAcceleration());
+//        telemetry.addData("Drive Vector", follower.getDriveVector());
+//        telemetry.addData("Collision", follower.collisionDetected());
+        telemetry.update();
+
         follower.setTeleOpMovementVectors(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
         follower.update();
     }

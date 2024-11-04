@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.pedroPathing.localization.tuning;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -50,6 +49,7 @@ public class TurnTuner extends OpMode {
 
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
+
     }
 
     /**
@@ -63,9 +63,12 @@ public class TurnTuner extends OpMode {
         telemetryA.addData("total angle", poseUpdater.getTotalHeading());
         telemetryA.addLine("The multiplier will display what your turn ticks to inches should be to scale your current angle to " + ANGLE + " radians.");
         telemetryA.addData("multiplier", ANGLE / (poseUpdater.getTotalHeading() / poseUpdater.getLocalizer().getTurningMultiplier()));
+        telemetryA.update();
 
         Drawing.drawPoseHistory(dashboardPoseTracker, "#4CAF50");
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
+
+
     }
 }
