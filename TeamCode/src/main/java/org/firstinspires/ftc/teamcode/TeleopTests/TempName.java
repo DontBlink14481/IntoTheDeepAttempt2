@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tele;
+package org.firstinspires.ftc.teamcode.TeleopTests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -6,34 +6,21 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Subsystems.DR4B;
-
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 
 @TeleOp
 @Config
-public class DR4BTuner extends LinearOpMode {
-
-    public static double position = 0;
-
-    public static double power = 0;
-
+public class TempName extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        DR4B d = new DR4B(hardwareMap);
+        Robot r = new Robot(hardwareMap, telemetry);
 
         waitForStart();
-
         while (opModeIsActive()) {
-            telemetry.addData("ref", position);
-            d.setPosition(position);
 
+            r.update();
 
-            telemetry.addData("real", d.getAngle());
-            telemetry.update();
-            d.update();
         }
     }
 }
