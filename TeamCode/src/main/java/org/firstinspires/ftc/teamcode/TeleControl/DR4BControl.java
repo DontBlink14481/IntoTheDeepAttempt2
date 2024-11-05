@@ -32,10 +32,10 @@ public class DR4BControl implements Control {
 
     @Override
     public void update() {
-        us.update(gp2.dpad_up);
-        ls.update(gp2.dpad_down);
-        ub.update(gp2.left_bumper);
-        lb.update(gp2.dpad_left);
+        us.updateOnPress(gp2.dpad_up);
+        ls.updateOnPress(gp2.dpad_down);
+        ub.updateOnPress(gp2.left_bumper);
+        lb.updateOnPress(gp2.dpad_left);
     }
 
     @Override

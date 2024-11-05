@@ -21,6 +21,10 @@ public class FallingEdge {
         }
     }
 
+    public void updateOnPress(boolean cond) {
+        if(cond) func.run();
+    }
+
     public void reset() {
         isPressed = false;
         isRunning = false;

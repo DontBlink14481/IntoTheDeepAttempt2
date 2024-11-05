@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public class IntakeSlides implements Subsystem {
-    public DcMotorEx slideMotorR;
+    public DcMotorEx slideMotorR; // TODO: figure out encoder motor
     public DcMotorEx slideMotorL;
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
@@ -107,6 +107,10 @@ public class IntakeSlides implements Subsystem {
     public void setPosition(double position) {
         rawPower = false;
         this.position = position;
+    }
+
+    public void getPosition() {
+        return slideMotorR.getCurrentPosition();
     }
 
     public void slidesNeutral() {
