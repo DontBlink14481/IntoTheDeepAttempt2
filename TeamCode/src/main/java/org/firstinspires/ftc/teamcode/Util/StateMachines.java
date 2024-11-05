@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Util;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.sfdev.assembly.state.*;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeArm;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
@@ -7,30 +11,41 @@ import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 
 @Config
 public class StateMachines {
-    public enum Transfer {
-        PRE_TRANSFER
+    public enum TransferStates {
+        PRE_TRANSFER,
+        INTAKE_BREAK, FINISHED
     }
 
-    public double INTAKE_BREAK = 0.2;
+    public enum OuttakeStates {
+        PRE_OUTTAKE,
+        INTAKE_BREAK, FINISHED
+    }
+
+    public static double INTAKE_BREAK = 0.2;
 
     public static StateMachine getTransferMachine(Robot robot, Telemetry telemetry) {
-        IntakeArm intakeArm = new IntakeArm(robot, telemetry);
+        IntakeArm intakeArm = robot.intakeArm;
         Outtake outtake = robot.outtake;
         IntakeSlides slides = robot.intakeSlides;
         telemetry.addData("went to transfer machine", ".");
 
         return new StateMachineBuilder()
-                .state(Transfer.PRE_TRANSFER)
+                .state(TransferStates.PRE_TRANSFER)
                 .onEnter(() -> {
                     // to init being transfer positions
                     robot.toInit();
                 })
-                .transition(() -> robot.intakeSlides.getPosition() < IntakeSlides.admissible)
+                .transition(() -> robot.intakeSlides.getRealPosition() < IntakeSlides.admissible)
 
-                .state(Transfer.INTAKE_BREAK)
+                .state(TransferStates.INTAKE_BREAK)
                 .transitionTimed(INTAKE_BREAK)
+                .onExit(outtake)
+
+                .state(TransferStates.FINISHED)
 
 
                 .build();
     }
+
+
 }

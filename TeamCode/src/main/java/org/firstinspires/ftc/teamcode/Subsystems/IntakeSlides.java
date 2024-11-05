@@ -109,10 +109,6 @@ public class IntakeSlides implements Subsystem {
         this.position = position;
     }
 
-    public void getPosition() {
-        return slideMotorR.getCurrentPosition();
-    }
-
     public void slidesNeutral() {
         setRawPower(NEUTRAL_POWER);
     }
