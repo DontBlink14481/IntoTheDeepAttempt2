@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 
 @Config
 public class DriveControl implements Control {
-    public boolean outreachMode = false;
-    public boolean overrideControl = false;
+    public static boolean outreachMode = false;
+    public static boolean overrideControl = false;
     public static double throttled = 0.5;
 
     public Drivebase drivebase;
@@ -34,6 +34,7 @@ public class DriveControl implements Control {
 
     @Override
     public void update() {
+        drivebase.drive.startTeleopDrive();
         if(outreachMode){
             if(gp2.left_stick_x != 0 || gp2.right_stick_x != 0 || gp2.left_stick_y != 0){
                 overrideControl = true;
