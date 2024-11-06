@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class IntakeSlides implements Subsystem {
     public DcMotorEx slideMotorR; // TODO: figure out encoder motor
     public DcMotorEx slideMotorL;
+    public DcMotor slidesEncoder;
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
     public static double kp = 0.004;
@@ -37,8 +38,10 @@ public class IntakeSlides implements Subsystem {
     }
 
     public IntakeSlides(HardwareMap map, boolean resetEncoder){
-        slideMotorR = map.get(DcMotorEx.class, "rsm");
-        slideMotorL = map.get(DcMotorEx.class, "lsm");
+        slideMotorR = map.get(DcMotorEx.class, "re");
+        slideMotorL = map.get(DcMotorEx.class, "le");
+        slidesEncoder = map.get(DcMotor.class, "fld");
+
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -114,7 +117,7 @@ public class IntakeSlides implements Subsystem {
     }
 
     public int getRealPosition() {
-        return slideMotorL.getCurrentPosition();
+        return slidesEncoder.getCurrentPosition();
     }
     public double getAngle() {
         return ticksToRad(slideMotorL.getCurrentPosition());

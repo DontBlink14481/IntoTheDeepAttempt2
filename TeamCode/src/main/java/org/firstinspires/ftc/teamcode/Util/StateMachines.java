@@ -29,17 +29,15 @@ public class StateMachines {
         IntakeSlides slides = robot.intakeSlides;
         telemetry.addData("went to transfer machine", ".");
 
+        // to init being transfer positions
         return new StateMachineBuilder()
                 .state(TransferStates.PRE_TRANSFER)
-                .onEnter(() -> {
-                    // to init being transfer positions
-                    robot.toInit();
-                })
+                .onEnter(robot::toInit)
                 .transition(() -> robot.intakeSlides.getRealPosition() < IntakeSlides.admissible)
 
                 .state(TransferStates.INTAKE_BREAK)
                 .transitionTimed(INTAKE_BREAK)
-                .onExit(outtake)
+                .onExit(outtake::grab)
 
                 .state(TransferStates.FINISHED)
 

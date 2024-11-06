@@ -2,7 +2,8 @@
     SPDX-License-Identifier: MIT
 
     Copyright (c) 2024 SparkFun Electronics
-*/
+*//*
+
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -14,6 +15,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+*/
 /*
  * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
  *
@@ -23,7 +25,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  * See the sensor's product page: https://www.sparkfun.com/products/24904
- */
+ *//*
+
 @TeleOp(name = "Sensor: SparkFun OTOS", group = "Sensor")
 @Disabled
 public class SensorSparkFunOTOS extends LinearOpMode {
@@ -154,3 +157,4 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         telemetry.update();
     }
 }
+*/

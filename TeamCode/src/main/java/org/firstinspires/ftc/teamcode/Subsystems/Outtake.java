@@ -35,6 +35,9 @@ public class Outtake implements Subsystem {
      public double WRIST_OVER_90 = 0;
     public double WRIST_MAX = 1;
 
+    public double CLAW_RELEASE = 0.5;
+    public double CLAW_GRAB = 0.5;
+
     private final double armPosToAngle = 180/(ARM_FLAT_OUT - ARM_FLAT_IN); // TODO: update); // TODO; update
     private final double wristAngleToPos = (WRIST_OVER_90 - WRIST_MID)/90; // TODO: update
 
@@ -57,17 +60,18 @@ public class Outtake implements Subsystem {
 
     public Outtake(HardwareMap h) {
         hardwareMap = h;
-        armLeft = hardwareMap.get(Servo.class, "outL");
-        armRight = hardwareMap.get(Servo.class, "outR");
-        swivel = hardwareMap.get(Servo.class, "swivel");
+        armLeft = hardwareMap.get(Servo.class, "leftOuttake");
+        armRight = hardwareMap.get(Servo.class, "rightOuttake");
+        armRight.setDirection(Servo.Direction.REVERSE);
+        swivel = hardwareMap.get(Servo.class, "outtakeSwivel");
         wrist = hardwareMap.get(Servo.class, "wrist");
-        claw = hardwareMap.get(Servo.class, "claw");
+        claw = hardwareMap.get(Servo.class, "outtakeClaw");
     }
 
 
     public void setArm(double pos) {
         armLeft.setPosition(pos);
-        armRight.setPosition(1 - pos);
+        armRight.setPosition(pos);
     }
 
     public void setWrist(double pos) {
@@ -78,6 +82,19 @@ public class Outtake implements Subsystem {
         swivel.setPosition(pos);
     }
 
+    public void grab() {
+        claw.setPosition(CLAW_GRAB);
+    }
+
+    public void release() {
+        claw.setPosition(CLAW_RELEASE);
+    }
+
+    public void outtake() {
+        setSwivel(SWIVEL_OUTTAKE);
+        setArm(ARM_BASKET);
+        setWrist(WRIST_BASKET);
+    }
 
     public void toInit() {
         setSwivel(SWIVEL_TRANSFER);

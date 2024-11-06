@@ -24,11 +24,11 @@ public class IntakeArm implements Subsystem {
 
 
     public IntakeArm(HardwareMap map) {
-        colorSensor = map.get(ColorSensor.class, "color");
-        claw = map.get(Servo.class, "claw");
-        armL = map.get(Servo.class, "armL");
-        armR = map.get(Servo.class, "armR");
-        swivel = map.get(Servo.class, "iSwivel");
+//        colorSensor = map.get(ColorSensor.class, "color");
+        claw = map.get(Servo.class, "intakeClaw");
+        armL = map.get(Servo.class, "leftIntakeArm");
+        armR = map.get(Servo.class, "rightIntakeArm");
+        swivel = map.get(Servo.class, "intakeSwivel");
         armL.setDirection(Servo.Direction.REVERSE);
     }
 
