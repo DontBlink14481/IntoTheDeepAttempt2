@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Util.Util;
 @Config
 public class Outtake implements Subsystem {
 
-    public static double SWIVEL_TRANSFER = 0.58 ;
+    public static double SWIVEL_FLAT = 0.58 ;
     public static double SWIVEL_OUTTAKE = 0.552;
     public static double SWIVEL_180 = 0.75;
     HardwareMap hardwareMap;
@@ -97,13 +97,13 @@ public class Outtake implements Subsystem {
     }
 
     public void outtake() {
-        setSwivel(SWIVEL_OUTTAKE);
+        setSwivel(SWIVEL_FLAT);
         setArm(ARM_BASKET);
         setWrist(WRIST_BASKET);
     }
 
     public void toInit() {
-        setSwivel(SWIVEL_TRANSFER);
+        setSwivel(SWIVEL_FLAT);
         setArm(ARM_TRANSFER);
         setWrist(WRIST_TRANSFER);
     }
@@ -123,7 +123,7 @@ public class Outtake implements Subsystem {
 
     public void transfer(){
         setArm(ARM_TRANSFER);
-        setSwivel(SWIVEL_TRANSFER);
+        setSwivel(SWIVEL_FLAT);
         setWrist(WRIST_TRANSFER);
         release();
     }

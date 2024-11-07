@@ -38,9 +38,6 @@ public class IntakeControl implements Control {
 
     @Override
     public void update() {
-
-
-
         arm.setArm(armUp ? IntakeArm.FLOAT_ARM : IntakeArm.ARM_GRAB);
 
         swapArm.update(gp2.circle);
@@ -54,13 +51,13 @@ public class IntakeControl implements Control {
 //            arm.setSpinner(-gp2.right_trigger);
 //        }
 
-        slides.setPosition(slides.getRealPosition() - slidesSpeed * gp2.left_stick_y);
+//        slides.setPosition(slides.getRealPosition() - slidesSpeed * gp2.left_stick_y);
 
-        if (gp2.right_bumper) {
+        if (gp2.right_trigger > 0.1) {
             slides.setPosition(IntakeSlides.PARTIAL);
         }
 
-        if (gp2.left_bumper) {
+        if (gp2.left_trigger > 0.1) {
             slides.setPosition(IntakeSlides.IN);
         }
 

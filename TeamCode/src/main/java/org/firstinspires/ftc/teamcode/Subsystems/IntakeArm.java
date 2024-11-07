@@ -26,7 +26,7 @@ public class IntakeArm implements Subsystem {
 
     public static double CLAW_GRAB = 0.5;
     public static double CLAW_TRANSFER = 0.27;
-    public static double INTAKE_SWIVEL = 0.45;
+    public static double SWIVEL_FLAT = 0.45;
 
 
 
@@ -69,6 +69,7 @@ public class IntakeArm implements Subsystem {
     @Override
     public void toInit(){
         setArm(ARM_TRANSFER);
+        setSwivel(SWIVEL_FLAT);
     }
 
     @Override

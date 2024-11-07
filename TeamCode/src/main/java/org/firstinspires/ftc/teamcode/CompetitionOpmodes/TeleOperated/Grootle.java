@@ -90,6 +90,7 @@ public class Grootle extends LinearOpMode {
                 .transition(() -> (collapseMachine.getState() == StateMachines.CollapseStates.FINISHED), TeleStates.NEUTRAL)
                 .build();
 
+        r.toInit();
         waitForStart();
 
         machine.start();

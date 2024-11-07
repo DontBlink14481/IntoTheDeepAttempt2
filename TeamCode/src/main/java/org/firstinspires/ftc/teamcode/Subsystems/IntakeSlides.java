@@ -96,7 +96,9 @@ public class IntakeSlides implements Subsystem {
     }
 
     public void toInit() {
+        setPosition(IN);
     }
+
     @Override
     public void update() {
         if(rawPower) setRawPower(0);
