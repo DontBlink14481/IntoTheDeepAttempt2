@@ -14,10 +14,12 @@ public class DR4BControl implements Control {
     Gamepad gp1;
     Gamepad gp2;
 
-    FallingEdge us = new FallingEdge(() -> dr4b.setPosition(DR4B.UPPER_SPECIMEN));
-    FallingEdge ls = new FallingEdge(() -> dr4b.setPosition(DR4B.LOWER_SPECIMEN));
-    FallingEdge ub = new FallingEdge(() -> dr4b.setPosition(DR4B.UPPER_BASKET));
-    FallingEdge lb = new FallingEdge(() -> dr4b.setPosition(DR4B.LOWER_BASKET));
+    public boolean outtakeOnRung = false;
+
+    FallingEdge us = new FallingEdge(() -> {dr4b.setPosition(DR4B.UPPER_SPECIMEN); outtakeOnRung = true;});
+    FallingEdge ls = new FallingEdge(() -> {dr4b.setPosition(DR4B.LOWER_SPECIMEN); outtakeOnRung = true;});
+    FallingEdge ub = new FallingEdge(() -> {dr4b.setPosition(DR4B.UPPER_BASKET); outtakeOnRung = false;});
+    FallingEdge lb = new FallingEdge(() -> {dr4b.setPosition(DR4B.LOWER_BASKET); outtakeOnRung = false;});
 
     public DR4BControl(DR4B d, Gamepad gp1, Gamepad gp2) {
         dr4b = d;

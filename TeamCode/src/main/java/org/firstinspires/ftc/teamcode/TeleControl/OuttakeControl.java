@@ -19,11 +19,13 @@ public class OuttakeControl implements Control {
     Gamepad gp1;
     Gamepad gp2;
 
-    FallingEdge armBasket = new FallingEdge(() -> outtake.setArm(Outtake.ARM_BASKET));
-    FallingEdge armSpecimen = new FallingEdge(() -> outtake.setArm(Outtake.ARM_SPECIMEN));
+    public boolean outtakeRung = false;
 
-    FallingEdge wristBasket = new FallingEdge(() -> outtake.setWrist(Outtake.WRIST_BASKET));
-    FallingEdge wristSpecimen = new FallingEdge(() -> outtake.setWrist(Outtake.WRIST_SPECIMEN));
+    FallingEdge armBasket = new FallingEdge(() -> {outtake.setArm(Outtake.ARM_BASKET); outtakeRung = false;});
+    FallingEdge armSpecimen = new FallingEdge(() -> {outtake.setArm(Outtake.ARM_SPECIMEN); outtakeRung = true;});
+
+    FallingEdge wristBasket = new FallingEdge(() -> {outtake.setWrist(Outtake.WRIST_BASKET); outtakeRung = false;});
+    FallingEdge wristSpecimen = new FallingEdge(() -> {outtake.setWrist(Outtake.WRIST_SPECIMEN); outtakeRung = true;});
 
     FallingEdge release = new FallingEdge(() -> outtake.release());
 
@@ -50,6 +52,8 @@ public class OuttakeControl implements Control {
             outtake.setSwivel(Outtake.joystickToSwivel(gp2.right_stick_x, gp2.right_stick_y));
         }
         else outtake.setSwivel(Outtake.SWIVEL_OUTTAKE);
+
+        outtake.setWrist(outtake.getGoodWristPosition(outtakeRung ? 0 : Outtake.BASKET_ANGLE));
 
         release.update(gp2.square);
 

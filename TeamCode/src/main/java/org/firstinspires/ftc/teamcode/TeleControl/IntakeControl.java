@@ -16,6 +16,11 @@ public class IntakeControl implements Control {
     IntakeArm arm;
     Robot robot;
     Gamepad gp1, gp2;
+    public boolean armUp = true;
+    public static double slidesSpeed = 1;
+
+    FallingEdge grab = new FallingEdge(() -> arm.grab());
+    FallingEdge swapArm = new FallingEdge(() -> armUp = !armUp);
 
     public IntakeControl(IntakeSlides slides, IntakeArm arm, Gamepad gp1, Gamepad gp2) {
         this.slides = slides;
@@ -34,8 +39,12 @@ public class IntakeControl implements Control {
     @Override
     public void update() {
 
-        arm.setArm(IntakeArm.ARM_OUTTAKE);
-        arm.setClaw(IntakeArm.CLAW_OPEN);
+
+
+        arm.setArm(armUp ? IntakeArm.FLOAT_ARM : IntakeArm.ARM_GRAB);
+
+        swapArm.update(gp2.circle);
+        grab.updateOnPress(gp2.cross);
 
 //        if (gp2.right_trigger == 0 && gp2.left_trigger == 0) {
 //            arm.setSpinner(0);
@@ -45,6 +54,8 @@ public class IntakeControl implements Control {
 //            arm.setSpinner(-gp2.right_trigger);
 //        }
 
+        slides.setPosition(slides.getRealPosition() - slidesSpeed * gp2.left_stick_y);
+
         if (gp2.right_bumper) {
             slides.setPosition(IntakeSlides.PARTIAL);
         }
@@ -52,6 +63,8 @@ public class IntakeControl implements Control {
         if (gp2.left_bumper) {
             slides.setPosition(IntakeSlides.IN);
         }
+
+
 
     }
 

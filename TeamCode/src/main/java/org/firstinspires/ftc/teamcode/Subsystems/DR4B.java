@@ -48,6 +48,7 @@ public class DR4B implements Subsystem {
     public static double iResetThreshold = 0.01;
     public static boolean smartDamp = false;
     public static boolean smarterDamp = false;
+    public static double acceptable = 0.05;
 
     //hardware
     private final HardwareMap hardwareMap;
@@ -70,10 +71,13 @@ public class DR4B implements Subsystem {
     public double totalI = 0;
     public double position = 0;
 
+    //positions
     public static double UPPER_SPECIMEN = 0;
     public static double LOWER_SPECIMEN = 0;
     public static double UPPER_BASKET = 0;
     public static double LOWER_BASKET = 0;
+    public static double CLIP_HEIGHT = -0.1;
+    public static double BASE = 0.1;
 
     private double power = 0;
 

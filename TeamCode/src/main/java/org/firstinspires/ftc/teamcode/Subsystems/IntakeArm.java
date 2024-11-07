@@ -18,8 +18,15 @@ public class IntakeArm implements Subsystem {
     public static ColorSensor colorSensor;
     public static Servo swivel;
 
-    public static double ARM_OUTTAKE = 0.3;
-    public static double CLAW_OPEN = 0.5;
+    public static double CLAW_OPEN = 0.2;
+
+    public static double ARM_GRAB = 0.2;
+    public static double ARM_TRANSFER = 0.56;
+    public static double FLOAT_ARM = 0.45;
+
+    public static double CLAW_GRAB = 0.5;
+    public static double CLAW_TRANSFER = 0.27;
+    public static double INTAKE_SWIVEL = 0.45;
 
 
 
@@ -50,10 +57,18 @@ public class IntakeArm implements Subsystem {
         return new Pose(colorSensor.red(), colorSensor.green(), colorSensor.blue());
     }
 
+    public void grab(){
+        claw.setPosition(CLAW_GRAB);
+    }
+
+    public void release(){
+        claw.setPosition(CLAW_OPEN);
+    }
+
 
     @Override
     public void toInit(){
-
+        setArm(ARM_TRANSFER);
     }
 
     @Override
