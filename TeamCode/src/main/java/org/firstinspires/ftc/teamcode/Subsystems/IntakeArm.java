@@ -28,8 +28,8 @@ public class IntakeArm implements Subsystem {
         claw = map.get(Servo.class, "intakeClaw");
         armL = map.get(Servo.class, "leftIntakeArm");
         armR = map.get(Servo.class, "rightIntakeArm");
+        armR.setDirection(Servo.Direction.REVERSE);
         swivel = map.get(Servo.class, "intakeSwivel");
-        armL.setDirection(Servo.Direction.REVERSE);
     }
 
 

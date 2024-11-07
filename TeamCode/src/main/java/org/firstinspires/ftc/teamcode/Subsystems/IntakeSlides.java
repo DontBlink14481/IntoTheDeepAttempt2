@@ -13,11 +13,11 @@ public class IntakeSlides implements Subsystem {
     public DcMotor slidesEncoder;
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
-    public static double kp = 0.004;
-    public static double kd = 0.0004;
+    public static double kp = 0.0015;
+    public static double kd = 0.00000;
     public static double ki = 0;
     public double totalI = 0;
-    public static double kf = 0.2;
+    public static double kf = 0.0;
     private double prev_error;
     private double prev_time;
     public static double admissible = 10;
@@ -41,6 +41,7 @@ public class IntakeSlides implements Subsystem {
         slideMotorR = map.get(DcMotorEx.class, "re");
         slideMotorL = map.get(DcMotorEx.class, "le");
         slidesEncoder = map.get(DcMotor.class, "fld");
+        slidesEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
 
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -120,7 +121,7 @@ public class IntakeSlides implements Subsystem {
         return slidesEncoder.getCurrentPosition();
     }
     public double getAngle() {
-        return ticksToRad(slideMotorL.getCurrentPosition());
+        return ticksToRad(slidesEncoder.getCurrentPosition());
     }
 
 }

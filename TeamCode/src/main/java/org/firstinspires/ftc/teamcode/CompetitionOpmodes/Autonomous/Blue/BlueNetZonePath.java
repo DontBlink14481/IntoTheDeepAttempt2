@@ -25,7 +25,7 @@ public class BlueNetZonePath extends LinearOpMode {
         robot = new Robot(hardwareMap, multipleTelemetry, startPose, true);
         PathBuilder builder = new PathBuilder();
 
-        builder
+        PathChain chain = new PathBuilder()
                 .addPath(
                         // Line 1
                         new BezierLine(
@@ -58,15 +58,16 @@ public class BlueNetZonePath extends LinearOpMode {
                                 new Point(69.272, 102.722, Point.CARTESIAN)
                         )
                 )
-                .setTangentHeadingInterpolation();
+                .setTangentHeadingInterpolation()
+                .build();
 
-        PathChain chain = builder.build();
+//        PathChain chain = builder.build();
 
         waitForStart();
         if (isStopRequested()) return;
 
         robot.drive.drive.followPath(chain);
-        while (robot.drive.drive.isBusy()) {
+        while (robot.drive.isBusy()) {
             robot.drive.update();
             telemetry.addData("X", robot.drive.drive.getPose().getX());
             telemetry.addData("Y", robot.drive.drive.getPose().getY());

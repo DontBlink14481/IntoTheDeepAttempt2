@@ -24,8 +24,8 @@ public class DR4B implements Subsystem {
     public static final double HIGHEST_WE_SHOULD_GO = HIGHEST_ANGLE;
 
     //power stuff
-    public static double LOWER_POWER_BOUND = -0.6;
-    public static double UPPER_POWER_BOUND = 0.8;
+    public static double LOWER_POWER_BOUND = -1;
+    public static double UPPER_POWER_BOUND = 1;
     public static double NEUTRAL_POWER = -0.1;
 
     //mp
@@ -36,15 +36,15 @@ public class DR4B implements Subsystem {
     public static double ka = 6e-2;
     public static double accSatErr = 0;
     public static double mpResetError = -1;
-    public static boolean motionProfile = true;
+    public static boolean motionProfile = false;
 
     //gains
-    public static double kp = 2;
+    public static double kp = 6;
     public static double ki = 0;
-    public static double kff = 0.02;
+    public static double kff = 0.0;
     public static double kg = 0.00;
-    public static double kfa = 0.2;
-    public static double kd = 0.1;
+    public static double kfa = 0;
+    public static double kd = 0;
     public static double iResetThreshold = 0.01;
     public static boolean smartDamp = false;
     public static boolean smarterDamp = false;
@@ -75,17 +75,19 @@ public class DR4B implements Subsystem {
     public static double UPPER_BASKET = 0;
     public static double LOWER_BASKET = 0;
 
+    private double power = 0;
+
     public DR4B(HardwareMap h) {
         hardwareMap = h;
         left = hardwareMap.get(DcMotorEx.class, "ldr4b");
         right = hardwareMap.get(DcMotorEx.class, "rdr4b");
         encoder = hardwareMap.get(DcMotor.class, "ldr4b"); // encoder in left front motor spot
 
-        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
-        left.setDirection(DcMotorSimple.Direction.REVERSE);
+        right.setDirection(DcMotorSimple.Direction.FORWARD);
+        left.setDirection(DcMotorSimple.Direction.FORWARD);
 
         encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         encoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -144,7 +146,7 @@ public class DR4B implements Subsystem {
             iResetAmount++;
         }
 
-        double power = p + d + FF + FA + mp + totalI;
+        power = p + d + FF + FA + mp + totalI;
         if (getAngle() - prevPos < 0) {
             power += kg;
         }
@@ -167,7 +169,8 @@ public class DR4B implements Subsystem {
 
         //if its hanging negative power is applied
         //if not, neutral down power or pid power is applied
-        setRawPower((position == 0.0) ? NEUTRAL_POWER : pid());
+//        setRawPower((position == 0.0) ? NEUTRAL_POWER : pid());
+        setRawPower(pid());
     }
 
     // set position for testing based on position
@@ -181,6 +184,10 @@ public class DR4B implements Subsystem {
             startPos = getAngle();
 //            useSUSPID = position - getAngle() < 0.2;
         }
+    }
+
+    public double getPower() {
+        return left.getPower();
     }
 
     public void update(Telemetry t) {
@@ -220,6 +227,10 @@ public class DR4B implements Subsystem {
 
     public double getPosition() {
         return position;
+    }
+
+    public double getRealPosition() {
+        return encoder.getCurrentPosition();
     }
 
 

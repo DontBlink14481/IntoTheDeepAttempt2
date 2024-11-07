@@ -25,7 +25,7 @@ public class BlueObservationZone extends LinearOpMode {
         robot = new Robot(hardwareMap, multipleTelemetry, startPose, true);
         PathBuilder builder = new PathBuilder();
 
-        builder
+        PathChain chain = new PathBuilder()
                 .addPath(
                         // Line 1
                         new BezierLine(
@@ -42,15 +42,14 @@ public class BlueObservationZone extends LinearOpMode {
                                 new Point(27.519, 33.213, Point.CARTESIAN)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(315));
-
-        PathChain chain = builder.build();
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(315))
+                .build();
 
         waitForStart();
         if (isStopRequested()) return;
 
         robot.drive.drive.followPath(chain);
-        while (robot.drive.drive.isBusy()) {
+        while (robot.drive.isBusy()) {
             robot.drive.update();
             telemetry.addData("X", robot.drive.drive.getPose().getX());
             telemetry.addData("Y", robot.drive.drive.getPose().getY());

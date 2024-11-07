@@ -25,6 +25,8 @@ public class OuttakeControl implements Control {
     FallingEdge wristBasket = new FallingEdge(() -> outtake.setWrist(Outtake.WRIST_BASKET));
     FallingEdge wristSpecimen = new FallingEdge(() -> outtake.setWrist(Outtake.WRIST_SPECIMEN));
 
+    FallingEdge release = new FallingEdge(() -> outtake.release());
+
 
 
     public static double deadzone = 0.2;
@@ -49,11 +51,13 @@ public class OuttakeControl implements Control {
         }
         else outtake.setSwivel(Outtake.SWIVEL_OUTTAKE);
 
-        armSpecimen.update(gp2.dpad_up || gp2.dpad_down);
-        wristSpecimen.update(gp2.dpad_up || gp2.dpad_down);
+        release.update(gp2.square);
 
-        armBasket.update(gp2.dpad_left || gp2.left_bumper);
-        wristBasket.update(gp2.dpad_left || gp2.left_bumper);
+        armSpecimen.updateOnPress(gp2.dpad_up || gp2.dpad_down);
+        wristSpecimen.updateOnPress(gp2.dpad_up || gp2.dpad_down);
+
+        armBasket.updateOnPress(gp2.dpad_left || gp2.left_bumper);
+        wristBasket.updateOnPress(gp2.dpad_left || gp2.left_bumper);
 
     }
 

@@ -49,6 +49,7 @@ public class Grootle extends LinearOpMode {
 
                 .state(TeleStates.INTAKE)
                 .onEnter(() -> r.intakeSlides.setPosition(IntakeSlides.PARTIAL))
+                .loop(ic::update)
                 .transition(() -> gamepad2.cross, TeleStates.TRANSFER)
 
                 .state(TeleStates.TRANSFER)
@@ -63,6 +64,7 @@ public class Grootle extends LinearOpMode {
                 .state(TeleStates.OUTTAKE)
                 .loop(() -> {
                     r.outtake.outtake();
+                    oc.update();
                     drbc.update();
                 })
                 .transition(() -> gamepad2.square, TeleStates.NEUTRAL)

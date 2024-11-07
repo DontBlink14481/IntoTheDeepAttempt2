@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 public class DriveControl implements Control {
     public static boolean outreachMode = false;
     public static boolean overrideControl = false;
-    public static double throttled = 0.5;
+    public static double throttled = 1;
 
     public Drivebase drivebase;
     public Robot robot;
@@ -30,11 +30,11 @@ public class DriveControl implements Control {
         this.drivebase = d;
         this.gp1 = gp1;
         this.gp2 = gp2;
+        drivebase.drive.startTeleopDrive();
     }
 
     @Override
     public void update() {
-        drivebase.drive.startTeleopDrive();
         if(outreachMode){
             if(gp2.left_stick_x != 0 || gp2.right_stick_x != 0 || gp2.left_stick_y != 0){
                 overrideControl = true;
@@ -52,7 +52,7 @@ public class DriveControl implements Control {
 
 
         if (!drivebase.driveDisable) {
-            drivebase.setPower(new Pose(-throttled*gp1.left_stick_y, gp1.left_stick_x * throttled, throttled * gp1.right_stick_x));
+            drivebase.drive.setTeleOpMovementVectors((-gp1.left_stick_y), -gp1.left_stick_x, -gp1.right_stick_x);;
         }
         drivebase.update();
     }

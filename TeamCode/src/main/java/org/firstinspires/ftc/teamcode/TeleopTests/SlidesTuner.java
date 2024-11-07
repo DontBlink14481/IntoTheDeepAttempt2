@@ -7,11 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.DR4B;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
 
 
 @TeleOp
 @Config
-public class DR4BTuner extends LinearOpMode {
+public class SlidesTuner extends LinearOpMode {
 
     public static double position = 0;
 
@@ -22,7 +23,7 @@ public class DR4BTuner extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        DR4B d = new DR4B(hardwareMap);
+        IntakeSlides d = new IntakeSlides(hardwareMap);
 
         waitForStart();
 
@@ -30,10 +31,8 @@ public class DR4BTuner extends LinearOpMode {
             telemetry.addData("ref", position);
             d.setPosition(position);
 
-
             telemetry.addData("real angle", d.getAngle());
-            telemetry.addData("real positoin", d.getRealPosition());
-            telemetry.addData("poewr", d.getPower());
+            telemetry.addData("real pos", d.getRealPosition());
             telemetry.update();
             d.update();
         }

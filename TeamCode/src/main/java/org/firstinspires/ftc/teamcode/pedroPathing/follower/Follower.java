@@ -171,7 +171,7 @@ public class Follower {
         rightFront = hardwareMap.get(DcMotorEx.class, rightFrontMotorName);
 
         // TODO: Make sure that this is the direction your motors need to be reversed in.
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
@@ -183,7 +183,7 @@ public class Follower {
         }
 
         for (DcMotorEx motor : motors) {
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);

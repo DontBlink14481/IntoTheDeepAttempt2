@@ -46,12 +46,12 @@ public class BlueNetZone extends LinearOpMode {
         if (isStopRequested()) return;
         waitForStart();
 
-        while (robot.drive.drive.isBusy()) {
+        while (robot.drive.isBusy()) {
             Util.writePosToFile(robot);
             robot.drive.update();
-            telemetry.addData("X", robot.drive.drive.getPose().getX());
-            telemetry.addData("Y", robot.drive.drive.getPose().getY());
-            telemetry.addData("Theta", robot.drive.drive.getPose().getHeading());
+            telemetry.addData("X", robot.drive.getPose().getX());
+            telemetry.addData("Y", robot.drive.getPose().getY());
+            telemetry.addData("Theta", robot.drive.getPose().getHeading());
             telemetry.update();
         }
     }

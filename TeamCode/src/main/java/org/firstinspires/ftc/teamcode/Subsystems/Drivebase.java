@@ -44,5 +44,13 @@ public class Drivebase implements Subsystem {
         drive.update();
     }
 
+    public boolean isBusy() {
+        return drive.isBusy();
+    }
+
+    public Pose getPose() {
+        return drive.getPose();
+    }
+
     public void toInit(){}
 }

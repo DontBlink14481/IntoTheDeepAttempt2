@@ -74,6 +74,10 @@ public class Outtake implements Subsystem {
         armRight.setPosition(pos);
     }
 
+    public void setClaw(double pose) {
+        claw.setPosition(pose);
+    }
+
     public void setWrist(double pos) {
         wrist.setPosition(pos);
     }
