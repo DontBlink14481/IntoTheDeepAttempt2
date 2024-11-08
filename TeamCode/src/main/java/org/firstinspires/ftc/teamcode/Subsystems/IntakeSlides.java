@@ -47,9 +47,9 @@ public class IntakeSlides implements Subsystem {
     public IntakeSlides(HardwareMap map, boolean resetEncoder){
         slideMotorR = map.get(DcMotorEx.class, "re");
         slideMotorL = map.get(DcMotorEx.class, "le");
-        slidesEncoder = map.get(DcMotor.class, "fld");
+        slidesEncoder = map.get(DcMotor.class, "le");
         voltageSensor = map.voltageSensor.iterator().next();
-        slidesEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+        slidesEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
 
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -59,9 +59,11 @@ public class IntakeSlides implements Subsystem {
         }
         slideMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slideMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slidesEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slideMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slidesEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 
