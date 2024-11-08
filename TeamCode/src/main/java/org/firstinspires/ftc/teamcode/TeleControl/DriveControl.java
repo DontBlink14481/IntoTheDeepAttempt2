@@ -44,7 +44,7 @@ public class DriveControl implements Control {
             }
             Gamepad cc = (overrideControl) ? gp2 : gp1;
 
-            drivebase.setPower(new Pose(-throttled*cc.left_stick_y, -cc.left_stick_x * throttled, -throttled * cc.right_stick_x));
+            drivebase.drive.setTeleOpMovementVectors(-throttled*cc.left_stick_y, -cc.left_stick_x * throttled, -throttled * cc.right_stick_x);
 
 
             return;

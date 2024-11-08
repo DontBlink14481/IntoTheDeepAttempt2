@@ -11,12 +11,13 @@ import org.firstinspires.ftc.teamcode.Subsystems.IntakeArm;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
+import org.firstinspires.ftc.teamcode.TeleControl.Control;
 
 @Config
 public class StateMachines {
     public enum TransferStates {
         PRE_TRANSFER,
-        INTAKE_BREAK, TRANSFER_BREAK, FINISHED
+        INTAKE_BREAK, TRANSFER_BREAK, SECOND_BREAK, FINISHED
     }
 
     public enum OuttakeStates {
@@ -38,12 +39,13 @@ public class StateMachines {
     }
 
     //transfer constants
-    public static double INTAKE_BREAK = 0.2;
+    public static double INTAKE_BREAK = 0.5;
 
     //collapse constants
     public static double RELEASE_TIME = 0.2;
     public static double TRANSFER_BREAK = 0.2;
     public static double TRAVEL_TIME = 0.2;
+    public static double SECOND_BREAK = 0.5;
 
 
     public static StateMachine getTransferMachine(Robot robot, Telemetry telemetry) {
@@ -60,12 +62,19 @@ public class StateMachines {
                 .onEnter(() -> {
                     robot.toInit();
                     outtake.release();
+                    outtake.setWrist(0.7);
                 })
                 .transition(() -> robot.intakeSlides.getRealPosition() < IntakeSlides.admissible)
 
                 .state(TransferStates.INTAKE_BREAK)
                 .transitionTimed(INTAKE_BREAK)
-                .onExit(outtake::grab)
+                .onExit(() -> {
+                    outtake.setWrist(Outtake.WRIST_TRANSFER);
+                })
+
+                .state(TransferStates.SECOND_BREAK)
+                .transitionTimed(SECOND_BREAK)
+                .onExit(() -> outtake.grab())
 
                 .state(TransferStates.TRANSFER_BREAK)
                 .transitionTimed(TRANSFER_BREAK)
@@ -105,18 +114,20 @@ public class StateMachines {
                 .build();
     }
 
-    public static StateMachine getIntakingMachine(Robot r, Telemetry telemetry) {
+    public static StateMachine getIntakingMachine(Robot r, Control ic, Telemetry telemetry) {
         return new StateMachineBuilder()
 
                 .state(IntakingStates.GRAB)
                 .onEnter(() -> {
                     r.intakeArm.setArm(IntakeArm.ARM_GRAB);
                 })
+                .loop(ic::update)
                 .transitionTimed(INTAKE_BREAK)
                 .onExit(() -> r.intakeArm.grab())
 
                 .state(IntakingStates.FLOAT)
                 .transitionTimed(.2)
+                .loop(ic::update)
                 .onExit(() ->{
                     r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
                     r.intakeArm.setSwivel(IntakeArm.SWIVEL_FLAT);

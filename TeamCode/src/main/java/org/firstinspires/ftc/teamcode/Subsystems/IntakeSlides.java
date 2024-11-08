@@ -25,7 +25,7 @@ public class IntakeSlides implements Subsystem {
     public static double kf = 0.0;
     private double prev_error;
     private double prev_time;
-    public static double admissible = 10;
+    public static double admissible = 40;
 
     public static double NEUTRAL_POWER = -0.05;
 
@@ -47,9 +47,9 @@ public class IntakeSlides implements Subsystem {
     public IntakeSlides(HardwareMap map, boolean resetEncoder){
         slideMotorR = map.get(DcMotorEx.class, "re");
         slideMotorL = map.get(DcMotorEx.class, "le");
-        slidesEncoder = map.get(DcMotor.class, "fld");
+        slidesEncoder = map.get(DcMotor.class, "le");
         voltageSensor = map.voltageSensor.iterator().next();
-        slidesEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+//        slidesEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
 
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -123,7 +123,7 @@ public class IntakeSlides implements Subsystem {
 
     public void setPosition(double position) {
         rawPower = false;
-        this.position = Range.clip(position, 0, 1700);
+        this.position = Range.clip(position, IN, EXTENDED);
     }
 
     public void slidesNeutral() {

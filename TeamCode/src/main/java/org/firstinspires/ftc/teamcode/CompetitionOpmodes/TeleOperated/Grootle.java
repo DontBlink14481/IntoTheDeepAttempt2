@@ -36,14 +36,16 @@ public class Grootle extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Robot r = new Robot(hardwareMap, telemetry);
 
-        StateMachine transferMachine = StateMachines.getTransferMachine(r, telemetry);
-        StateMachine collapseMachine = StateMachines.getCollapseMachine(r, telemetry);
-        StateMachine intakingMachine = StateMachines.getIntakingMachine(r, telemetry);
-
         DriveControl dc = new DriveControl(r, gamepad1, gamepad2);
         IntakeControl ic = new IntakeControl(r, gamepad1, gamepad2);
         OuttakeControl oc = new OuttakeControl(r, gamepad1, gamepad2);
         DR4BControl drbc = new DR4BControl(r, gamepad1, gamepad2);
+
+        StateMachine transferMachine = StateMachines.getTransferMachine(r, telemetry);
+        StateMachine collapseMachine = StateMachines.getCollapseMachine(r, telemetry);
+        StateMachine intakingMachine = StateMachines.getIntakingMachine(r, ic, telemetry);
+
+
 
 
 
