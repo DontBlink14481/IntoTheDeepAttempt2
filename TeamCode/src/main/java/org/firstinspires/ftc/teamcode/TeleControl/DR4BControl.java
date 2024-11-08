@@ -20,6 +20,7 @@ public class DR4BControl implements Control {
     FallingEdge ls = new FallingEdge(() -> {dr4b.setPosition(DR4B.LOWER_SPECIMEN); outtakeOnRung = true;});
     FallingEdge ub = new FallingEdge(() -> {dr4b.setPosition(DR4B.UPPER_BASKET); outtakeOnRung = false;});
     FallingEdge lb = new FallingEdge(() -> {dr4b.setPosition(DR4B.LOWER_BASKET); outtakeOnRung = false;});
+    FallingEdge obs = new FallingEdge(() -> {dr4b.setPosition(DR4B.OBSERVATION); outtakeOnRung = false;});
 
     public DR4BControl(DR4B d, Gamepad gp1, Gamepad gp2) {
         dr4b = d;
@@ -38,6 +39,9 @@ public class DR4BControl implements Control {
         ls.updateOnPress(gp2.dpad_right);
         ub.updateOnPress(gp2.dpad_up);
         lb.updateOnPress(gp2.dpad_left);
+
+        obs.updateOnPress(gp2.touchpad);
+
     }
 
     @Override

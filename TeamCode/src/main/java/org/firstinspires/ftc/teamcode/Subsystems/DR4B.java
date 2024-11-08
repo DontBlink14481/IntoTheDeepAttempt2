@@ -77,8 +77,9 @@ public class DR4B implements Subsystem {
     public static double LOWER_SPECIMEN = .0;
     public static double UPPER_BASKET = 1.1;
     public static double LOWER_BASKET = 0;
-    public static double CLIP_HEIGHT = -0.1;
+    public static double CLIP_HEIGHT = 0.1;
     public static double BASE = 0.0;
+    public static double OBSERVATION = BASE;
 
     private double power = 0;
 
@@ -105,6 +106,7 @@ public class DR4B implements Subsystem {
     }
 
     public void toInit() {
+        setPosition(BASE);
     }
 
     public static double cosTheta(double angle) {
@@ -187,7 +189,6 @@ public class DR4B implements Subsystem {
             iResetAmount++;
             startTime = System.nanoTime()/1E9;
             startPos = getAngle();
-//            useSUSPID = position - getAngle() < 0.2;
         }
     }
 
@@ -197,7 +198,6 @@ public class DR4B implements Subsystem {
 
     public void update(Telemetry t) {
         update();
-//        t.addData("using suspid", useSUSPID);
         t.addData("v4b internal position", position);
         t.addData("equal to 0", position == 0.0);
     }

@@ -34,7 +34,7 @@ public class IntakeSlides implements Subsystem {
 
     public static double IN = -200;
     public static double PARTIAL = 600;
-    public static double EXTENDED = 1700;
+    public static double EXTENDED = 1730;
 
     public IntakeSlides(HardwareMap map) {
         this(map, true);

@@ -21,6 +21,17 @@ public class IntakeControl implements Control {
 
     FallingEdge grab = new FallingEdge(() -> arm.grab());
     FallingEdge swapArm = new FallingEdge(() -> armUp = !armUp);
+    FallingEdge swivelLeft = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_LEFT));
+    FallingEdge swivelRight = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_RIGHT));
+
+
+    FallingEdge slidesIn = new FallingEdge(() -> slides.setPosition(IntakeSlides.IN));
+
+    private boolean slidesPartialToggle = true;
+    FallingEdge extendToggle = new FallingEdge(() -> {
+        slides.setPosition(slidesPartialToggle ? IntakeSlides.PARTIAL : IntakeSlides.EXTENDED);
+        slidesPartialToggle = !slidesPartialToggle;
+    } );
 
     public IntakeControl(IntakeSlides slides, IntakeArm arm, Gamepad gp1, Gamepad gp2) {
         this.slides = slides;
@@ -47,16 +58,13 @@ public class IntakeControl implements Control {
 //            arm.setSpinner(-gp2.right_trigger);
 //        }
 
-        slides.setPosition(slides.getRealPosition() - slidesSpeed * gp2.left_stick_y);
+        slides.setPosition(slides.position - slidesSpeed * gp2.left_stick_y);
+        slidesIn.update(gp2.left_bumper);
 
-        if (gp2.right_trigger > 0.1) {
-            slides.setPosition(IntakeSlides.PARTIAL);
-        }
+        extendToggle.update(gp2.right_bumper);
 
-        if (gp2.left_trigger > 0.1) {
-            slides.setPosition(IntakeSlides.IN);
-        }
-
+        swivelLeft.update(gp2.left_trigger > 0.1);
+        swivelRight.update(gp2.right_trigger > 0.1);
 
 
     }
@@ -64,6 +72,10 @@ public class IntakeControl implements Control {
     @Override
     public void addTelemetry(Telemetry telemetry) {
 
+    }
+
+    public void resetToggle() {
+        slidesPartialToggle = true;
     }
 
 

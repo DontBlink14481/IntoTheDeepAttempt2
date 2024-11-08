@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Util.Util;
 @Config
 public class Outtake implements Subsystem {
 
-    public static double SWIVEL_FLAT = 0.58 ;
+    public static double SWIVEL_FLAT = 0.6 ;
     public static double SWIVEL_OUTTAKE = 0.552;
     public static double SWIVEL_180 = 0.75;
     HardwareMap hardwareMap;
@@ -23,6 +23,9 @@ public class Outtake implements Subsystem {
     public static double ARM_TRANSFER = 0.305;
     public static double ARM_FLAT_IN = 0.225;
     public static double ARM_FLAT_OUT = 0.72;
+    public static double ARM_MAX_POS = armAngleToPos(90+15);
+
+
     public int swivelPos = 0; // by default at flat position
 
     // wrist stuff
@@ -35,16 +38,19 @@ public class Outtake implements Subsystem {
     public static double BASKET_ANGLE = 45;
 
     public static double CLAW_RELEASE = 0.5;
-    public static double CLAW_GRAB = 0.2;
+    public static double CLAW_GRAB = 0.17;
 
-    private final double armPosToAngle = 180/(ARM_FLAT_OUT - ARM_FLAT_IN); // TODO: update); // TODO; update
-    private final double wristAngleToPos = (WRIST_OVER_90 - WRIST_MID)/90; // TODO: update
+    private static final double armPosToAngle = 180/(ARM_FLAT_OUT - ARM_FLAT_IN); // TODO: update); // TODO; update
+    private static final double wristAngleToPos = (WRIST_OVER_90 - WRIST_MID)/90; // TODO: update
 
     public static double ARM_BASKET = 0.34;
     public static double ARM_SPECIMEN = 0.47;
+    public static double ARM_OBSERVATION = 0.47;
 
     public static double WRIST_BASKET = 0.3;
     public static double WRIST_SPECIMEN = 0.26;
+    public static double WRIST_OBSERVATION = 0.47;
+
 
     public static double ARM_OUT_INTER = 0.5;
     public static double WRIST_OUT_INTER = 0.5;
@@ -70,6 +76,7 @@ public class Outtake implements Subsystem {
 
 
     public void setArm(double pos) {
+        if(pos > ARM_MAX_POS) pos = ARM_MAX_POS;
         armLeft.setPosition(pos);
         armRight.setPosition(pos);
     }
@@ -141,7 +148,7 @@ public class Outtake implements Subsystem {
         return ((pos - ARM_FLAT_IN) * armPosToAngle);
     }
 
-    public double armAngleToPos(double angle) {
+    public static double armAngleToPos(double angle) {
         return angle / armPosToAngle + ARM_FLAT_IN;
     }
 

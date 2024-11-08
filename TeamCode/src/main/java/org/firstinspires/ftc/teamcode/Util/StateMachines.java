@@ -83,19 +83,24 @@ public class StateMachines {
     public static StateMachine getCollapseMachine(Robot r, Telemetry t) {
         return new StateMachineBuilder()
                 .state(CollapseStates.CLIP)
-                .onEnter(() -> r.outtake.outtakeInter())
-                .transition(() -> r.outtake.armSetPosition == -1)
+                .onEnter(() -> r.dr4b.setPosition(r.dr4b.getAngle() - DR4B.CLIP_HEIGHT))
+                .transition(() -> Util.isCloseEnough(r.dr4b.getAngle(), r.dr4b.getPosition(), DR4B.acceptable))
 
                 .state(CollapseStates.RELEASE)
                 .onEnter(r.outtake::release)
                 .transitionTimed(RELEASE_TIME)
+
+                .state(CollapseStates.DROP)
+                .onEnter(() -> r.dr4b.setPosition(r.dr4b.getAngle() - DR4B.UPPER_SPECIMEN_DROP))
+                .transition(() -> Util.isCloseEnough(r.dr4b.getAngle(), r.dr4b.getPosition(), DR4B.acceptable))
 
                 .state(CollapseStates.COLLAPSE)
                 .onEnter(() -> {
                     r.dr4b.setPosition(DR4B.BASE);
                     r.outtake.transfer();
                 })
-                .transition(() -> Util.isCloseEnough(r.dr4b.getAngle(), r.dr4b.getPosition(), DR4B.acceptable))
+                .transition(() -> true)
+
                 .state(CollapseStates.FINISHED)
                 .build();
     }
@@ -112,7 +117,10 @@ public class StateMachines {
 
                 .state(IntakingStates.FLOAT)
                 .transitionTimed(.2)
-                .onExit(() -> r.intakeArm.setArm(IntakeArm.FLOAT_ARM))
+                .onExit(() ->{
+                    r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
+                    r.intakeArm.setSwivel(IntakeArm.SWIVEL_FLAT);
+                })
 
                 .state(IntakingStates.FINAL)
 
