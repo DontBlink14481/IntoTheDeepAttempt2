@@ -21,11 +21,15 @@ public class IntakeControl implements Control {
 
     FallingEdge grab = new FallingEdge(() -> arm.grab());
     FallingEdge swapArm = new FallingEdge(() -> armUp = !armUp);
+    FallingEdge flat = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_FLAT));
     FallingEdge swivelLeft = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_LEFT));
     FallingEdge swivelRight = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_RIGHT));
 
 
-    FallingEdge slidesIn = new FallingEdge(() -> slides.setPosition(IntakeSlides.IN));
+    FallingEdge slidesIn = new FallingEdge(() -> {
+        slides.setPosition(IntakeSlides.IN);
+        slidesPartialToggle = true;
+    });
 
     private boolean slidesPartialToggle = true;
     FallingEdge extendToggle = new FallingEdge(() -> {
@@ -63,6 +67,7 @@ public class IntakeControl implements Control {
 
         extendToggle.update(gp2.right_bumper);
 
+        flat.update(gp2.touchpad);
         swivelLeft.update(gp2.left_trigger > 0.1);
         swivelRight.update(gp2.right_trigger > 0.1);
 

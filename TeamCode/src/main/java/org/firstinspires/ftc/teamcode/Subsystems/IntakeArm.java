@@ -28,7 +28,7 @@ public class IntakeArm implements Subsystem {
     public static double CLAW_TRANSFER = 0.27;
     public static double SWIVEL_FLAT = 0.44;
     public static double SWIVEL_LEFT = 0.6;
-    public static double SWIVEL_RIGHT = 1;
+    public static double SWIVEL_RIGHT = 0.3;
 
 
 

@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.dashboard.*;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.sfdev.assembly.state.StateMachine;
 import com.sfdev.assembly.state.StateMachineBuilder;
 
@@ -44,6 +45,8 @@ public class Grootle extends LinearOpMode {
         OuttakeControl oc = new OuttakeControl(r, gamepad1, gamepad2);
         DR4BControl drbc = new DR4BControl(r, gamepad1, gamepad2);
 
+
+
         StateMachine machine = new StateMachineBuilder()
                 .state(TeleStates.NEUTRAL)
                 .onEnter(() -> {
@@ -53,7 +56,7 @@ public class Grootle extends LinearOpMode {
                 .loop(() -> {
                     r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
                 })
-                .transition(() -> gamepad2.right_bumper || gamepad2.left_bumper || gamepad2.right_stick_y != 0, TeleStates.INTAKE_2)
+                .transition(() -> gamepad2.right_bumper || gamepad2.left_bumper || gamepad2.right_stick_y != 0 || gamepad2.left_trigger > 0.1 || gamepad2.right_trigger > 0.1, TeleStates.INTAKE_2)
                 .transition(() -> gamepad2.cross, TeleStates.INTAKE_2)
 
                 // float
@@ -61,7 +64,7 @@ public class Grootle extends LinearOpMode {
                 .onEnter(() -> {
                     r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
                     r.intakeArm.release();
-                    r.intakeArm.setSwivel(IntakeArm.SWIVEL_RIGHT);
+                    r.intakeArm.setSwivel(IntakeArm.SWIVEL_FLAT);
                 })
                 .loop(ic::update)
                 .transition(()-> gamepad2.cross)
@@ -75,19 +78,6 @@ public class Grootle extends LinearOpMode {
                 })
                 .transition(() -> intakingMachine.getState() == StateMachines.IntakingStates.FINAL && gamepad2.cross, TeleStates.TRANSFER)
                 .transition(() -> intakingMachine.getState() == StateMachines.IntakingStates.FINAL && gamepad2.triangle, TeleStates.INTAKE_2)
-
-
-               /* .state(TeleStates.INTAKE)
-                .onEnter(() -> {
-                    r.intakeSlides.setPosition(IntakeSlides.PARTIAL);
-                    r.intakeArm.release();
-
-                })
-                .loop(ic::update)
-                .onExit(() -> {
-                    ic.armUp = true;
-                })
-                .transition(() -> gamepad2.cross, TeleStates.TRANSFER)*/
 
                 .state(TeleStates.TRANSFER)
                 .onEnter(() -> {
@@ -110,9 +100,9 @@ public class Grootle extends LinearOpMode {
                 .onEnter(() -> {
                     oc.grabToggle = true;
                     r.dr4b.setPosition(DR4B.OBSERVATION);
-                    r.outtake.grab();
                 })
                 .loop(() -> {
+                    r.outtake.grab();
                     oc.update();
                     drbc.update();
                 })

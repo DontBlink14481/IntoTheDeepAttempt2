@@ -71,10 +71,9 @@ public class OuttakeControl implements Control {
 
 //        outtake.setWrist(outtake.getGoodWristPosition(outtakeRung ? 0 : Outtake.BASKET_ANGLE));
 
-        if(grabToggle){
-            outtake.grab();
+        if (gp2.square) {
+            outtake.release();
         }
-        else outtake.release();
 
         switch(outtakeState){
             case OBSERVATION:

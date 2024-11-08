@@ -56,6 +56,8 @@ public class Robot {
         intakeSlides = new IntakeSlides(hardwareMap, resetSlidesEncoder);
         subsystems = new ArrayList<>(Arrays.asList(dr4b, drive, outtake, intakeSlides, intakeArm));
 
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
+
     }
 
     public Robot(HardwareMap map, Telemetry t,  Pose start) {
@@ -71,6 +73,10 @@ public class Robot {
     public void activateVision(VisionProcessor... visionProcessors){
         vision = new Vision(hardwareMap, telemetry, visionProcessors);
         subsystems.add(vision);
+    }
+
+    public double getVoltage() {
+        return voltageSensor.getVoltage();
     }
 
     public VectorF getCameraPos() {

@@ -45,11 +45,11 @@ public class Outtake implements Subsystem {
 
     public static double ARM_BASKET = 0.34;
     public static double ARM_SPECIMEN = 0.47;
-    public static double ARM_OBSERVATION = 0.47;
+    public static double ARM_OBSERVATION = ARM_SPECIMEN;
 
     public static double WRIST_BASKET = 0.3;
     public static double WRIST_SPECIMEN = 0.26;
-    public static double WRIST_OBSERVATION = 0.47;
+    public static double WRIST_OBSERVATION = WRIST_SPECIMEN;
 
 
     public static double ARM_OUT_INTER = 0.5;

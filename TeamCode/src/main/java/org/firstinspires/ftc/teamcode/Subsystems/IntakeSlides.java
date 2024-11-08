@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
@@ -14,6 +15,7 @@ public class IntakeSlides implements Subsystem {
     public DcMotorEx slideMotorR; // TODO: figure out encoder motor
     public DcMotorEx slideMotorL;
     public DcMotor slidesEncoder;
+    VoltageSensor voltageSensor;
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
     public static double kp = 0.0015;
@@ -36,6 +38,8 @@ public class IntakeSlides implements Subsystem {
     public static double PARTIAL = 600;
     public static double EXTENDED = 1730;
 
+    public static double optimal_power = 14;
+
     public IntakeSlides(HardwareMap map) {
         this(map, true);
     }
@@ -44,6 +48,7 @@ public class IntakeSlides implements Subsystem {
         slideMotorR = map.get(DcMotorEx.class, "re");
         slideMotorL = map.get(DcMotorEx.class, "le");
         slidesEncoder = map.get(DcMotor.class, "fld");
+        voltageSensor = map.voltageSensor.iterator().next();
         slidesEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
 
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -88,13 +93,17 @@ public class IntakeSlides implements Subsystem {
         prev_time = curr_time;
         if (Math.abs(curr_error) < admissible) power = 0;
 
-        return power;
+        return power * (optimal_power / getVoltage());
     }
 
     public void setRawPower(double power) {
         rawPower = true;
         slideMotorR.setPower(power);
         slideMotorL.setPower(power);
+    }
+
+    public double getVoltage() {
+        return voltageSensor.getVoltage();
     }
 
     public void toInit() {
