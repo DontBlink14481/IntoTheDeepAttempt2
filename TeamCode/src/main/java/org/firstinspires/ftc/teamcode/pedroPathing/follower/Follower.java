@@ -387,6 +387,10 @@ public class Follower {
         holdPoint(new Point(pose), pose.getHeading());
     }
 
+    public void holdCurrentPosition() {
+        holdPoint(getPose());
+    }
+
     /**
      * This follows a Path.
      * This also makes the Follower hold the last Point on the Path.

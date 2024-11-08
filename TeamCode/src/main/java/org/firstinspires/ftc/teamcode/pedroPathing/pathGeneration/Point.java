@@ -185,6 +185,31 @@ public class Point {
         return y;
     }
 
+    public Point rotatePoint(double angleRad, Point center) {
+        double cx = center.getX();
+        double cy = center.getY();
+        double xPrime = (x - cx) * Math.cos(angleRad) - (y - cy) * Math.sin(angleRad);
+        double yPrime = (x - cx) * Math.sin(angleRad) + (y - cy) * Math.cos(angleRad);
+
+        return new Point(xPrime, yPrime, CARTESIAN);
+    }
+
+    public Point rotatePoint(double angleRad) {
+        return rotatePoint(angleRad, new Point(0, 0, CARTESIAN));
+    }
+
+    public Point rotate180() {
+        return rotatePoint(Math.toRadians(180));
+    }
+
+    public Pose getAsPose(double angle) {
+        return new Pose(x, y, angle);
+    }
+
+    public Point convertToFTC() {
+        return new Point(x-72, y-72);
+    }
+
     /**
      * This creates a new Point with the same information as this Point, just pointing to a different
      * memory location. In other words, a deep copy.

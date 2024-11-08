@@ -52,7 +52,7 @@ public class DriveControl implements Control {
 
 
         if (!drivebase.driveDisable) {
-            drivebase.drive.setTeleOpMovementVectors((-gp1.left_stick_y), -gp1.left_stick_x, -gp1.right_stick_x);;
+            drivebase.drive.setTeleOpMovementVectors((-gp1.left_stick_y), -gp1.left_stick_x, -gp1.right_stick_x);
         }
         drivebase.update();
     }

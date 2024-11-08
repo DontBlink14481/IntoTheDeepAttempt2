@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.pedroPathing.localization;
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Vector;
 
 /**
@@ -182,6 +183,27 @@ public class Pose {
         setX(-x);
         setY(-y);
         setHeading(-heading);
+    }
+
+    public Pose rotatePose(double angleRad, Point center) {
+        Point newPoint = getAsPoint().rotatePoint(angleRad, center);
+        return newPoint.getAsPose(heading + angleRad);
+    }
+
+    public Pose rotatePose(double angleRad) {
+        return rotatePose(angleRad, new Point(0, 0, Point.CARTESIAN));
+    }
+
+    public Pose rotate180() {
+        return rotatePose(Math.toRadians(180));
+    }
+
+    public Point getAsPoint() {
+        return new Point(x, y, Point.CARTESIAN);
+    }
+
+    public Pose convertToFTC() {
+        return new Pose(x-72, y-72, heading);
     }
 
     /**

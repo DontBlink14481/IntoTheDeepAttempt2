@@ -10,6 +10,7 @@ import com.sfdev.assembly.state.StateMachine;
 import com.sfdev.assembly.state.StateMachineBuilder;
 
 import org.firstinspires.ftc.teamcode.Subsystems.DR4B;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeArm;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
@@ -36,16 +37,15 @@ public class Grootle extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Robot r = new Robot(hardwareMap, telemetry);
 
+
+        StateMachine transferMachine = StateMachines.getTransferMachine(r, telemetry);
+        StateMachine collapseMachine = StateMachines.getCollapseMachine(r, telemetry);
+        StateMachine intakingMachine = StateMachines.getIntakingMachine(r, telemetry);
+
         DriveControl dc = new DriveControl(r, gamepad1, gamepad2);
         IntakeControl ic = new IntakeControl(r, gamepad1, gamepad2);
         OuttakeControl oc = new OuttakeControl(r, gamepad1, gamepad2);
         DR4BControl drbc = new DR4BControl(r, gamepad1, gamepad2);
-
-        StateMachine transferMachine = StateMachines.getTransferMachine(r, telemetry);
-        StateMachine collapseMachine = StateMachines.getCollapseMachine(r, telemetry);
-        StateMachine intakingMachine = StateMachines.getIntakingMachine(r, ic, telemetry);
-
-
 
 
 

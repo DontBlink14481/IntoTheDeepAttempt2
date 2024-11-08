@@ -54,7 +54,7 @@ public class Robot {
         dr4b = new DR4B(hardwareMap);
         intakeArm = new IntakeArm(hardwareMap);
         intakeSlides = new IntakeSlides(hardwareMap, resetSlidesEncoder);
-        subsystems = new ArrayList<>(Arrays.asList(dr4b, drive, outtake, intakeSlides, intakeArm));
+        subsystems = new ArrayList<>(Arrays.asList(dr4b, outtake, intakeSlides, intakeArm, drive));
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
