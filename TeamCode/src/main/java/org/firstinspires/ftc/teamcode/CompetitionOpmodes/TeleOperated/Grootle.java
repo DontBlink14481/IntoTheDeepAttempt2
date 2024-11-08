@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Util.StateMachines;
 public class Grootle extends LinearOpMode {
 
     public enum TeleStates {
-        NEUTRAL, INTAKE, TRANSFER, COLLAPSE, OUTTAKE
+        NEUTRAL, INTAKE, TRANSFER, COLLAPSE, INTAKE_2, INTAKING_MACHINE, OUTTAKE
     }
 
     @Override
@@ -37,6 +37,7 @@ public class Grootle extends LinearOpMode {
 
         StateMachine transferMachine = StateMachines.getTransferMachine(r, telemetry);
         StateMachine collapseMachine = StateMachines.getCollapseMachine(r, telemetry);
+        StateMachine intakingMachine = StateMachines.getIntakingMachine(r, telemetry);
 
         DriveControl dc = new DriveControl(r, gamepad1, gamepad2);
         IntakeControl ic = new IntakeControl(r, gamepad1, gamepad2);
@@ -45,26 +46,53 @@ public class Grootle extends LinearOpMode {
 
         StateMachine machine = new StateMachineBuilder()
                 .state(TeleStates.NEUTRAL)
-                .onEnter(r::toInit)
-                .transition(() -> gamepad2.right_trigger > 0.1, TeleStates.INTAKE)
-
-                .state(TeleStates.INTAKE)
                 .onEnter(() -> {
-                    r.intakeSlides.setPosition(IntakeSlides.PARTIAL);
+                    r.toInit();
+                    r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
+                })
+                .transition(() -> gamepad2.right_trigger > 0.1, TeleStates.INTAKE_2)
+
+                // float
+                .state(TeleStates.INTAKE_2)
+                .onEnter(() -> {
+                    r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
+//                    r.intakeSlides.setPosition(IntakeSlides.PARTIAL);
                     r.intakeArm.release();
                 })
                 .loop(ic::update)
+                .transition(()-> gamepad2.cross)
+
+                .state(TeleStates.INTAKING_MACHINE)
+                .onEnter(intakingMachine::start)
+                .loop(intakingMachine::update)
                 .onExit(() -> {
-                    r.intakeSlides.setPosition(IntakeSlides.IN);
-                    r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
+                    intakingMachine.reset();
+                    intakingMachine.stop();
+                })
+                .transition(() -> intakingMachine.getState() == StateMachines.IntakingStates.FINAL && gamepad2.cross, TeleStates.TRANSFER)
+                .transition(() -> intakingMachine.getState() == StateMachines.IntakingStates.FINAL && gamepad2.triangle, TeleStates.INTAKE_2)
+
+
+               /* .state(TeleStates.INTAKE)
+                .onEnter(() -> {
+                    r.intakeSlides.setPosition(IntakeSlides.PARTIAL);
+                    r.intakeArm.release();
+
+                })
+                .loop(ic::update)
+                .onExit(() -> {
                     ic.armUp = true;
                 })
-                .transition(() -> gamepad2.cross, TeleStates.TRANSFER)
+                .transition(() -> gamepad2.cross, TeleStates.TRANSFER)*/
 
                 .state(TeleStates.TRANSFER)
                 .onEnter(transferMachine::start)
                 .loop(transferMachine::update)
-                .transition(() -> (transferMachine.getState() == StateMachines.TransferStates.FINISHED) && gamepad2.dpad_up)
+                .transition(() -> (transferMachine.getState() == StateMachines.TransferStates.FINISHED) && (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right))
+                .transition(() -> gamepad2.triangle, TeleStates.INTAKE_2, () ->{
+//                    r.intakeSlides.setPosition(IntakeSlides.PARTIAL);
+                    r.outtake.toInit();
+                })
                 .onExit(() -> {
                     transferMachine.stop();
                     transferMachine.reset();
@@ -72,7 +100,6 @@ public class Grootle extends LinearOpMode {
 
                 .state(TeleStates.OUTTAKE)
                 .loop(() -> {
-                    r.outtake.outtake();
                     oc.update();
                     drbc.update();
                 })
@@ -95,6 +122,11 @@ public class Grootle extends LinearOpMode {
 
         machine.start();
         while (opModeIsActive()) {
+            telemetry.addData("Tele State", machine.getState());
+            telemetry.addData("Intake slide SET spositoin", r.intakeSlides.position);
+            telemetry.addData("Intake slide curr position", r.intakeSlides.getRealPosition());
+            telemetry.update();
+
             machine.update();
             dc.update();
             r.update();

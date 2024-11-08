@@ -20,14 +20,14 @@ public class Outtake implements Subsystem {
     public Servo swivel;
     public Servo claw;
 
-    public static double ARM_TRANSFER = 0.29;
+    public static double ARM_TRANSFER = 0.305;
     public static double ARM_FLAT_IN = 0.225;
     public static double ARM_FLAT_OUT = 0.72;
     public int swivelPos = 0; // by default at flat position
 
     // wrist stuff
     public Servo wrist; // up & down tilt
-    public static double WRIST_TRANSFER =  .74; //.15
+    public static double WRIST_TRANSFER =  .76; //.15
     public static double WRIST_OVER_90 =  .4; //.15 CHANGENNGEGE
     public static double WRIST_MID = 0;
     public static double WRIST_OVER_90F = 0;
@@ -40,16 +40,14 @@ public class Outtake implements Subsystem {
     private final double armPosToAngle = 180/(ARM_FLAT_OUT - ARM_FLAT_IN); // TODO: update); // TODO; update
     private final double wristAngleToPos = (WRIST_OVER_90 - WRIST_MID)/90; // TODO: update
 
+    public static double ARM_BASKET = 0.34;
+    public static double ARM_SPECIMEN = 0.47;
 
-    public static double ARM_BASKET = 0.1;
-    public static double ARM_SPECIMEN = 0.1;
-
-    public static double WRIST_BASKET = 0.1;
-    public static double WRIST_SPECIMEN = 0.1;
+    public static double WRIST_BASKET = 0.3;
+    public static double WRIST_SPECIMEN = 0.26;
 
     public static double ARM_OUT_INTER = 0.5;
     public static double WRIST_OUT_INTER = 0.5;
-
 
 
     //arm mp stuff
@@ -106,6 +104,7 @@ public class Outtake implements Subsystem {
         setSwivel(SWIVEL_FLAT);
         setArm(ARM_TRANSFER);
         setWrist(WRIST_TRANSFER);
+        release();
     }
 
     @Override

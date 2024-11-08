@@ -59,7 +59,7 @@ public class Robot {
     }
 
     public Robot(HardwareMap map, Telemetry t,  Pose start) {
-        this(map, t, start, false);
+        this(map, t, start, true); // TODO: change
     }
 
 

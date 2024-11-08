@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 
 @Config
 public class IntakeSlides implements Subsystem {
@@ -14,7 +17,7 @@ public class IntakeSlides implements Subsystem {
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
     public static double kp = 0.0015;
-    public static double kd = 0.00000;
+    public static double kd = 0.0000;
     public static double ki = 0;
     public double totalI = 0;
     public static double kf = 0.0;
@@ -29,9 +32,9 @@ public class IntakeSlides implements Subsystem {
     public double position = 0;
     public static boolean rawPower = false;
 
-    public static double IN = 0;
-    public static double PARTIAL = 200;
-    public static double EXTENDED = 400;
+    public static double IN = -200;
+    public static double PARTIAL = 600;
+    public static double EXTENDED = 1700;
 
     public IntakeSlides(HardwareMap map) {
         this(map, true);
@@ -41,14 +44,13 @@ public class IntakeSlides implements Subsystem {
         slideMotorR = map.get(DcMotorEx.class, "re");
         slideMotorL = map.get(DcMotorEx.class, "le");
         slidesEncoder = map.get(DcMotor.class, "fld");
-        slidesEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
+        slidesEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
 
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
 
         if(resetEncoder){
-            slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slidesEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         slideMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slideMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -112,7 +114,7 @@ public class IntakeSlides implements Subsystem {
 
     public void setPosition(double position) {
         rawPower = false;
-        this.position = position;
+        this.position = Range.clip(position, 0, 1700);
     }
 
     public void slidesNeutral() {

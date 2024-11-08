@@ -53,15 +53,17 @@ public class OuttakeControl implements Control {
         }
         else outtake.setSwivel(Outtake.SWIVEL_OUTTAKE);
 
-        outtake.setWrist(outtake.getGoodWristPosition(outtakeRung ? 0 : Outtake.BASKET_ANGLE));
+//        outtake.setWrist(outtake.getGoodWristPosition(outtakeRung ? 0 : Outtake.BASKET_ANGLE));
+
+        outtake.setWrist(Outtake.WRIST_BASKET);
 
         release.update(gp2.square);
 
-        armSpecimen.updateOnPress(gp2.dpad_up || gp2.dpad_down);
-        wristSpecimen.updateOnPress(gp2.dpad_up || gp2.dpad_down);
+        armSpecimen.updateOnPress(gp2.dpad_right || gp2.dpad_down);
+//        wristSpecimen.updateOnPress(gp2.dpad_up || gp2.dpad_down);
 
-        armBasket.updateOnPress(gp2.dpad_left || gp2.left_bumper);
-        wristBasket.updateOnPress(gp2.dpad_left || gp2.left_bumper);
+        armBasket.updateOnPress(gp2.dpad_left || gp2.dpad_up);
+//        wristBasket.updateOnPress(gp2.dpad_left || gp2.left_bumper);
 
     }
 

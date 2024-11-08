@@ -11,13 +11,13 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 @TeleOp
 public class AllServoTest extends LinearOpMode {
 
-    public static double WRIST_POSE = 0.2;
-    public static double OUTTAKE_ARM_POSE = 0.5;
-    public static double INTAKE_ARM_POSE = 0.5;
-    public static double INTAKE_SWIVEL = 0.5;
-    public static double INTAKE_CLAW = 0.2;
-    public static double OUTTAKE_CLAW = 0.3;
-    public static double SWIVEL_POSE = 0.3;
+    public static double WRIST_POSE = Outtake.WRIST_TRANSFER;
+    public static double OUTTAKE_ARM_POSE = Outtake.ARM_TRANSFER;
+    public static double INTAKE_ARM_POSE = IntakeArm.ARM_TRANSFER;
+    public static double INTAKE_SWIVEL = IntakeArm.SWIVEL_FLAT;
+    public static double INTAKE_CLAW = IntakeArm.CLAW_OPEN;
+    public static double OUTTAKE_CLAW = Outtake.CLAW_RELEASE;
+    public static double OUTTAKE_SWIVEL_POSE = Outtake.SWIVEL_FLAT;
 
 
 
@@ -32,7 +32,7 @@ public class AllServoTest extends LinearOpMode {
         while (opModeIsActive()) {
             outtake.setArm(OUTTAKE_ARM_POSE);
             outtake.setWrist(WRIST_POSE);
-            outtake.setSwivel(SWIVEL_POSE);
+            outtake.setSwivel(OUTTAKE_SWIVEL_POSE);
             outtake.setClaw(OUTTAKE_CLAW);
 
             intake.setArm(INTAKE_ARM_POSE);

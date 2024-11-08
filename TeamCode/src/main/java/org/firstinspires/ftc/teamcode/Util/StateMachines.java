@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 public class StateMachines {
     public enum TransferStates {
         PRE_TRANSFER,
-        INTAKE_BREAK, FINISHED
+        INTAKE_BREAK, TRANSFER_BREAK, FINISHED
     }
 
     public enum OuttakeStates {
@@ -24,19 +24,26 @@ public class StateMachines {
         INTAKE_BREAK, FINISHED
     }
 
-    public enum CollapseStates{
+    public enum IntakingStates {
+        FLOAT, NEUTRAL, FINAL, GRAB
+
+    }
+
+    public enum CollapseStates {
         CLIP,
         RELEASE,
         DROP,
         COLLAPSE,
         FINISHED
     }
+
     //transfer constants
-    public static double INTAKE_BREAK = 1;
+    public static double INTAKE_BREAK = 0.2;
 
     //collapse constants
     public static double RELEASE_TIME = 0.2;
-    public static double TRAVEL_TIME = 0.5;
+    public static double TRANSFER_BREAK = 0.2;
+    public static double TRAVEL_TIME = 0.2;
 
 
     public static StateMachine getTransferMachine(Robot robot, Telemetry telemetry) {
@@ -47,6 +54,8 @@ public class StateMachines {
 
         // to init being transfer positions
         return new StateMachineBuilder()
+                .waitState(RELEASE_TIME)
+
                 .state(TransferStates.PRE_TRANSFER)
                 .onEnter(() -> {
                     robot.toInit();
@@ -58,13 +67,20 @@ public class StateMachines {
                 .transitionTimed(INTAKE_BREAK)
                 .onExit(outtake::grab)
 
+                .state(TransferStates.TRANSFER_BREAK)
+                .transitionTimed(TRANSFER_BREAK)
+                .onExit(() -> {
+                    robot.intakeArm.release();
+                    robot.intakeArm.setArm(IntakeArm.FLOAT_ARM);
+                })
+
                 .state(TransferStates.FINISHED)
 
 
                 .build();
     }
 
-    public static StateMachine getCollapseMachine(Robot r, Telemetry t){
+    public static StateMachine getCollapseMachine(Robot r, Telemetry t) {
         return new StateMachineBuilder()
                 .state(CollapseStates.CLIP)
                 .onEnter(() -> r.outtake.outtakeInter())
@@ -82,6 +98,27 @@ public class StateMachines {
                 .transition(() -> Util.isCloseEnough(r.dr4b.getAngle(), r.dr4b.getPosition(), DR4B.acceptable))
                 .state(CollapseStates.FINISHED)
                 .build();
+    }
+
+    public static StateMachine getIntakingMachine(Robot r, Telemetry telemetry) {
+        return new StateMachineBuilder()
+
+                .state(IntakingStates.GRAB)
+                .onEnter(() -> {
+                    r.intakeArm.setArm(IntakeArm.ARM_GRAB);
+                })
+                .transitionTimed(INTAKE_BREAK)
+                .onExit(() -> r.intakeArm.grab())
+
+                .state(IntakingStates.FLOAT)
+                .transitionTimed(.2)
+                .onExit(() -> r.intakeArm.setArm(IntakeArm.FLOAT_ARM))
+
+                .state(IntakingStates.FINAL)
+
+
+                .build();
+
     }
 
 
