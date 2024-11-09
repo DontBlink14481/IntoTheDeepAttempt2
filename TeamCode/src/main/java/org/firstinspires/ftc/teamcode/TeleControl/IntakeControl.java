@@ -20,9 +20,9 @@ public class IntakeControl implements Control {
     IntakeArm arm;
     Robot robot;
     Gamepad gp1, gp2;
-    public boolean armUp = true;
+    public boolean armUp = false;
     public static double slidesSpeed = 150;
-
+    public boolean cancelArm = false;
     FallingEdge grab = new FallingEdge(() -> arm.grab());
     FallingEdge swapArm = new FallingEdge(() -> armUp = !armUp);
     FallingEdge flat = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_FLAT));
@@ -71,13 +71,18 @@ public class IntakeControl implements Control {
 
         extendToggle.update(gp2.right_bumper);
 
-        flat.update(gp2.touchpad);
-        swivelLeft.update(gp2.left_trigger > 0.1);
-        swivelRight.update(gp2.right_trigger > 0.1);
+        swapArm.update(gp2.circle);
+
+        if(!cancelArm) arm.setArm(armUp ? IntakeArm.FLOAT_ARM : IntakeArm.ARM_GRAB);
+
+//        flat.update(gp2.touchpad);
+//        swivelLeft.update(gp2.left_trigger > 0.1);
+//        swivelRight.update(gp2.right_trigger > 0.1);
 
         if(gp2.right_stick_x *gp2.right_stick_x + gp2.right_stick_y * gp2.right_stick_y > (deadzone * deadzone)){
             arm.setSwivel(Range.clip(IntakeArm.joystickToSwivel(gp2.right_stick_x, gp2.right_stick_y), 0, 1));
         }
+        else arm.setSwivel(IntakeArm.SWIVEL_FLAT);
 
 
     }

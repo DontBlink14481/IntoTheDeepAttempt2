@@ -70,10 +70,16 @@ public class Grootle extends LinearOpMode {
                     r.intakeArm.setSwivel(IntakeArm.SWIVEL_FLAT);
                 })
                 .loop(ic::update)
+                .onExit(() -> {
+                    ic.armUp = true;
+                })
                 .transition(()-> gamepad2.cross)
 
                 .state(TeleStates.INTAKING_MACHINE)
-                .onEnter(intakingMachine::start)
+                .onEnter(() -> {
+                    intakingMachine.start();
+                    ic.cancelArm = true;
+                })
                 .loop(() -> {
                     intakingMachine.update();
                     ic.update();
@@ -81,6 +87,8 @@ public class Grootle extends LinearOpMode {
                 .onExit(() -> {
                     intakingMachine.reset();
                     intakingMachine.stop();
+                    ic.armUp = true;
+                    ic.cancelArm = false;
                 })
                 .transition(() -> intakingMachine.getState() == StateMachines.IntakingStates.FINAL && gamepad2.cross, TeleStates.TRANSFER)
                 .transition(() -> intakingMachine.getState() == StateMachines.IntakingStates.FINAL && gamepad2.triangle, TeleStates.INTAKE_2)
