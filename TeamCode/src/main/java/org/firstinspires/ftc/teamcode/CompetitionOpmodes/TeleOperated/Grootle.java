@@ -73,7 +73,10 @@ public class Grootle extends LinearOpMode {
 
                 .state(TeleStates.INTAKING_MACHINE)
                 .onEnter(intakingMachine::start)
-                .loop(intakingMachine::update)
+                .loop(() -> {
+                    intakingMachine.update();
+                    ic.update();
+                })
                 .onExit(() -> {
                     intakingMachine.reset();
                     intakingMachine.stop();

@@ -114,20 +114,18 @@ public class StateMachines {
                 .build();
     }
 
-    public static StateMachine getIntakingMachine(Robot r, Control ic, Telemetry telemetry) {
+    public static StateMachine getIntakingMachine(Robot r, Telemetry telemetry) {
         return new StateMachineBuilder()
 
                 .state(IntakingStates.GRAB)
                 .onEnter(() -> {
                     r.intakeArm.setArm(IntakeArm.ARM_GRAB);
                 })
-                .loop(ic::update)
                 .transitionTimed(INTAKE_BREAK)
                 .onExit(() -> r.intakeArm.grab())
 
                 .state(IntakingStates.FLOAT)
                 .transitionTimed(.2)
-                .loop(ic::update)
                 .onExit(() ->{
                     r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
                     r.intakeArm.setSwivel(IntakeArm.SWIVEL_FLAT);
