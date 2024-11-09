@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -26,6 +28,8 @@ public class Robot {
     public Telemetry telemetry;
     public DR4B dr4b;
 
+    public Gamepad gp1, gp2;
+
     public double error = -1;
 
     public Drivebase drive;
@@ -45,7 +49,7 @@ public class Robot {
 
     // initializing other subsystems
 
-    public Robot(HardwareMap map, Telemetry t, Pose start, boolean resetSlidesEncoder){
+    public Robot(HardwareMap map, Telemetry t, Pose start, boolean resetSlidesEncoder, Gamepad gp1, Gamepad gp2){
         hardwareMap = map;
         telemetry = t;
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -55,19 +59,21 @@ public class Robot {
         intakeArm = new IntakeArm(hardwareMap);
         intakeSlides = new IntakeSlides(hardwareMap, resetSlidesEncoder);
         subsystems = new ArrayList<>(Arrays.asList(dr4b, outtake, intakeSlides, intakeArm, drive));
+        this.gp1 = gp1;
+        this.gp2 = gp2;
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
     }
 
-    public Robot(HardwareMap map, Telemetry t,  Pose start) {
-        this(map, t, start, true); // TODO: change
+    public Robot(HardwareMap map, Telemetry t,  Pose start, Gamepad gp1, Gamepad gp2) {
+        this(map, t, start, true, gp1, gp2); // TODO: change
     }
 
 
 
-    public Robot(HardwareMap map, Telemetry telemetry) {
-        this(map, telemetry, Util.getPoseFromFile());
+    public Robot(HardwareMap map, Telemetry telemetry, Gamepad gp1, Gamepad gp2) {
+        this(map, telemetry, Util.getPoseFromFile(), gp1, gp2);
     }
 
     public void activateVision(VisionProcessor... visionProcessors){

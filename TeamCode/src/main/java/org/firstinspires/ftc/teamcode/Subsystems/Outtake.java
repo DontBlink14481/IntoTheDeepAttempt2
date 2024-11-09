@@ -20,40 +20,40 @@ public class Outtake implements Subsystem {
     public Servo swivel;
     public Servo claw;
 
-    public static double ARM_TRANSFER = 0.305;
-    public static double ARM_FLAT_IN = 0.225;
-    public static double ARM_FLAT_OUT = 0.72;
-    public static double ARM_MAX_POS = armAngleToPos(90+15);
+    public static double ARM_TRANSFER = 0.23;
+    public static double ARM_FLAT_IN = 0.15;
+    public static double ARM_FLAT_OUT = 0.68;
+    public static double ARM_MAX_POS = armAngleToPos(90+25);
 
 
     public int swivelPos = 0; // by default at flat position
 
     // wrist stuff
     public Servo wrist; // up & down tilt
-    public static double WRIST_TRANSFER =  .76; //.15
-    public static double WRIST_OVER_90 =  .4; //.15 CHANGENNGEGE
-    public static double WRIST_MID = 0;
+    public static double WRIST_TRANSFER =  .05; //.15
+    public static double WRIST_OVER_90 =  .53; //.15 CHANGENNGEGE
+    public static double WRIST_MID = 0.25;
     public static double WRIST_OVER_90F = 0;
     public static double WRIST_MAX = 1;
     public static double BASKET_ANGLE = 45;
 
-    public static double CLAW_RELEASE = 0.5;
-    public static double CLAW_GRAB = 0.17;
+    public static double CLAW_RELEASE = 0.6;
+    public static double CLAW_GRAB = 0.1;
 
     private static final double armPosToAngle = 180/(ARM_FLAT_OUT - ARM_FLAT_IN); // TODO: update); // TODO; update
     private static final double wristAngleToPos = (WRIST_OVER_90 - WRIST_MID)/90; // TODO: update
 
-    public static double ARM_BASKET = 0.34;
-    public static double ARM_SPECIMEN = 0.47;
-    public static double ARM_OBSERVATION = ARM_SPECIMEN;
+    public static double ARM_BASKET = 0.4;
+    public static double ARM_SPECIMEN = 0.5;
+    public static double ARM_OBSERVATION = ARM_BASKET;
 
-    public static double WRIST_BASKET = 0.3;
-    public static double WRIST_SPECIMEN = 0.26;
-    public static double WRIST_OBSERVATION = WRIST_SPECIMEN;
+    public static double WRIST_BASKET = 0.42;
+    public static double WRIST_SPECIMEN = 0.6;
+    public static double WRIST_OBSERVATION = WRIST_BASKET;
 
 
-    public static double ARM_OUT_INTER = 0.5;
-    public static double WRIST_OUT_INTER = 0.5;
+    public static double ARM_OUT_INTER = 0.3;
+    public static double WRIST_OUT_INTER = 0.1;
 
 
     //arm mp stuff
@@ -109,8 +109,7 @@ public class Outtake implements Subsystem {
 
     public void toInit() {
         setSwivel(SWIVEL_FLAT);
-        setArm(ARM_TRANSFER);
-        setWrist(WRIST_TRANSFER);
+        outtakeInter();
         release();
     }
 
@@ -162,7 +161,7 @@ public class Outtake implements Subsystem {
     }
 
     public void outtakeInter(){
-        setArmPoseMP(ARM_OUT_INTER);
+        setArm(ARM_OUT_INTER);
         setWrist(WRIST_OUT_INTER);
     }
 

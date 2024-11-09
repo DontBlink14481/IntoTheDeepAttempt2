@@ -22,7 +22,7 @@ public class BlueNetZonePath extends LinearOpMode {
     @Override
     public void runOpMode() {
         MultipleTelemetry multipleTelemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
-        robot = new Robot(hardwareMap, multipleTelemetry, startPose, true);
+        robot = new Robot(hardwareMap, multipleTelemetry, startPose, true, gamepad1, gamepad2);
         PathBuilder builder = new PathBuilder();
 
         PathChain chain = new PathBuilder()

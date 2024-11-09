@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Util;
 
-import android.view.CollapsibleActionView;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.sfdev.assembly.state.*;
 
@@ -11,7 +9,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.IntakeArm;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.TeleControl.Control;
 
 @Config
 public class StateMachines {
@@ -39,13 +36,14 @@ public class StateMachines {
     }
 
     //transfer constants
-    public static double INTAKE_BREAK = 0.5;
+    public static double INTAKE_BREAK = 0.2;
 
     //collapse constants
     public static double RELEASE_TIME = 0.2;
-    public static double TRANSFER_BREAK = 0.2;
+    public static double TRANSFER_BREAK = 0.05;
     public static double TRAVEL_TIME = 0.2;
-    public static double SECOND_BREAK = 0.5;
+    public static double SECOND_BREAK = 0.05;
+    public static double ARM_UP = 0.4;
 
 
     public static StateMachine getTransferMachine(Robot robot, Telemetry telemetry) {
@@ -62,14 +60,14 @@ public class StateMachines {
                 .onEnter(() -> {
                     robot.toInit();
                     outtake.release();
-                    outtake.setWrist(0.7);
+                    outtake.outtakeInter();
                 })
                 .transition(() -> robot.intakeSlides.getRealPosition() < IntakeSlides.admissible)
 
                 .state(TransferStates.INTAKE_BREAK)
-                .transitionTimed(INTAKE_BREAK)
+                .transitionTimed(ARM_UP)
                 .onExit(() -> {
-                    outtake.setWrist(Outtake.WRIST_TRANSFER);
+                    outtake.transfer();
                 })
 
                 .state(TransferStates.SECOND_BREAK)
@@ -93,15 +91,11 @@ public class StateMachines {
         return new StateMachineBuilder()
                 .state(CollapseStates.CLIP)
                 .onEnter(() -> r.dr4b.setPosition(r.dr4b.getAngle() - DR4B.CLIP_HEIGHT))
-                .transition(() -> Util.isCloseEnough(r.dr4b.getAngle(), r.dr4b.getPosition(), DR4B.acceptable))
+                .transition(() -> Util.isCloseEnough(r.dr4b.getAngle(), r.dr4b.getPosition(), DR4B.acceptable) || r.gp2.circle)
 
                 .state(CollapseStates.RELEASE)
                 .onEnter(r.outtake::release)
                 .transitionTimed(RELEASE_TIME)
-
-                .state(CollapseStates.DROP)
-                .onEnter(() -> r.dr4b.setPosition(r.dr4b.getAngle() - DR4B.UPPER_SPECIMEN_DROP))
-                .transition(() -> Util.isCloseEnough(r.dr4b.getAngle(), r.dr4b.getPosition(), DR4B.acceptable))
 
                 .state(CollapseStates.COLLAPSE)
                 .onEnter(() -> {

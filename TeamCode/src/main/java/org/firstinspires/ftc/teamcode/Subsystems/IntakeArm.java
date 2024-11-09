@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -18,17 +19,17 @@ public class IntakeArm implements Subsystem {
     public static ColorSensor colorSensor;
     public static Servo swivel;
 
-    public static double CLAW_OPEN = 0.2;
+    public static double CLAW_OPEN = 0.3;
 
     public static double ARM_GRAB = 0.5;
-    public static double ARM_TRANSFER = 0.21;
-    public static double FLOAT_ARM = 0.45;
+    public static double ARM_TRANSFER = 0.18;
+    public static double FLOAT_ARM = 0.42;
 
     public static double CLAW_GRAB = 0.46;
-    public static double CLAW_TRANSFER = 0.27;
     public static double SWIVEL_FLAT = 0.44;
     public static double SWIVEL_LEFT = 0.6;
     public static double SWIVEL_RIGHT = 0.3;
+    public static double ZERO_ANGLE = 0.11;
 
 
 
@@ -65,6 +66,15 @@ public class IntakeArm implements Subsystem {
 
     public void release(){
         claw.setPosition(CLAW_OPEN);
+    }
+
+    public static double joystickToSwivel(double x, double y){
+        double angle = Range.scale(Math.toDegrees(Math.atan2(x, y)) - 90, -270, 90, -180, 180);
+        return swivelAngleToPos(angle + ((angle < 0) ? 180 : 0));
+    }
+
+    public static double swivelAngleToPos(double angle){
+        return ZERO_ANGLE + (ZERO_ANGLE - SWIVEL_FLAT)*angle/90;
     }
 
 

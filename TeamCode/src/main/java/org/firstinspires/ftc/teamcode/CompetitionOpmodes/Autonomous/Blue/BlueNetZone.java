@@ -92,7 +92,7 @@ public class BlueNetZone extends LinearOpMode {
 
     public void initialize() {
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
-        robot = new Robot(hardwareMap, telemetry, startPose, true);
+        robot = new Robot(hardwareMap, telemetry, startPose, true, gamepad1, gamepad2);
         collapseMachine = StateMachines.getCollapseMachine(robot, telemetry);
         transferMachine = StateMachines.getTransferMachine(robot, telemetry);
         intakeMachine = StateMachines.getIntakingMachine(robot, telemetry);

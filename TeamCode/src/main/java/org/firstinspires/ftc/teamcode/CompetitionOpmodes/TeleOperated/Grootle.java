@@ -28,14 +28,16 @@ import org.firstinspires.ftc.teamcode.Util.StateMachines;
 public class Grootle extends LinearOpMode {
 
     public enum TeleStates {
-        NEUTRAL, INTAKE, TRANSFER, COLLAPSE, INTAKE_2, INTAKING_MACHINE, OUTTAKE
+        NEUTRAL, INTAKE, TRANSFER, COLLAPSE, INTAKE_2, INTAKING_MACHINE, DROP, OUTTAKE
     }
+
+    public static double DROP_DELAY = 0.3;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Robot r = new Robot(hardwareMap, telemetry);
+        Robot r = new Robot(hardwareMap, telemetry, gamepad1, gamepad2);
 
 
         StateMachine transferMachine = StateMachines.getTransferMachine(r, telemetry);
@@ -53,12 +55,11 @@ public class Grootle extends LinearOpMode {
                 .state(TeleStates.NEUTRAL)
                 .onEnter(() -> {
                     r.toInit();
-                    r.intakeArm.setSwivel(IntakeArm.SWIVEL_RIGHT);
                 })
                 .loop(() -> {
                     r.intakeArm.setArm(IntakeArm.FLOAT_ARM);
                 })
-                .transition(() -> gamepad2.right_bumper || gamepad2.left_bumper || gamepad2.right_stick_y != 0 || gamepad2.left_trigger > 0.1 || gamepad2.right_trigger > 0.1, TeleStates.INTAKE_2)
+                .transition(() -> gamepad2.right_bumper || gamepad2.left_bumper || gamepad2.right_stick_y != 0 || gamepad2.left_trigger > 0.1 || gamepad2.right_trigger > 0.1 || gamepad2.cross, TeleStates.INTAKE_2)
                 .transition(() -> gamepad2.cross, TeleStates.INTAKE_2)
 
                 // float
@@ -105,17 +106,22 @@ public class Grootle extends LinearOpMode {
                 .onEnter(() -> {
                     oc.grabToggle = true;
                     r.dr4b.setPosition(DR4B.OBSERVATION);
+                    oc.outtakeState = OuttakeControl.OuttakeStates.OBSERVATION;
                 })
                 .loop(() -> {
                     r.outtake.grab();
                     oc.update();
                     drbc.update();
                 })
-                .transition(() -> gamepad2.square && !drbc.outtakeOnRung, TeleStates.NEUTRAL)
+                .transition(() -> gamepad2.square && !drbc.outtakeOnRung, TeleStates.DROP)
                 .transition(() -> gamepad2.square && drbc.outtakeOnRung, TeleStates.COLLAPSE)
                 .onExit(() -> {
-                    oc.outtakeState = OuttakeControl.OuttakeStates.OBSERVATION;
+
                 })
+
+                .state(TeleStates.DROP)
+                .onEnter(r.outtake::release)
+                .transitionTimed(DROP_DELAY, TeleStates.NEUTRAL)
 
                 .state(TeleStates.COLLAPSE)
                 .onEnter(collapseMachine::start)

@@ -19,6 +19,8 @@ public class DriveControl implements Control {
     public Drivebase drivebase;
     public Robot robot;
     public Gamepad gp1, gp2;
+    
+    public static double SLOW_MOVE = 0.5;
 
 
     public DriveControl(Robot robot, Gamepad gp1, Gamepad gp2) {
@@ -51,8 +53,10 @@ public class DriveControl implements Control {
         }
 
 
+        throttled = (gp1.right_bumper | gp1.left_bumper) ? SLOW_MOVE : 1;
+
         if (!drivebase.driveDisable) {
-            drivebase.drive.setTeleOpMovementVectors((-gp1.left_stick_y), -gp1.left_stick_x, -gp1.right_stick_x);
+            drivebase.drive.setTeleOpMovementVectors(throttled * (-gp1.left_stick_y), -gp1.left_stick_x * throttled, -gp1.right_stick_x * throttled);
         }
         drivebase.update();
     }

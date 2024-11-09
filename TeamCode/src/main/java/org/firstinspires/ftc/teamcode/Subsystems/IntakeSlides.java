@@ -18,8 +18,8 @@ public class IntakeSlides implements Subsystem {
     VoltageSensor voltageSensor;
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
-    public static double kp = 0.0015;
-    public static double kd = 0.0000;
+    public static double kp = 0.0013;
+    public static double kd = 0.00005;
     public static double ki = 0;
     public double totalI = 0;
     public static double kf = 0.0;

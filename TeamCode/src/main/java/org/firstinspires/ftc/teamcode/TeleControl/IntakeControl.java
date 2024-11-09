@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.TeleControl;
 
+import static org.firstinspires.ftc.teamcode.TeleControl.OuttakeControl.deadzone;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeArm;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
+import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Util.FallingEdge;
 
@@ -70,6 +74,10 @@ public class IntakeControl implements Control {
         flat.update(gp2.touchpad);
         swivelLeft.update(gp2.left_trigger > 0.1);
         swivelRight.update(gp2.right_trigger > 0.1);
+
+        if(gp2.right_stick_x *gp2.right_stick_x + gp2.right_stick_y * gp2.right_stick_y > (deadzone * deadzone)){
+            arm.setSwivel(Range.clip(IntakeArm.joystickToSwivel(gp2.right_stick_x, gp2.right_stick_y), 0, 1));
+        }
 
 
     }

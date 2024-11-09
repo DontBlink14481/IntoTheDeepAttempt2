@@ -72,12 +72,12 @@ public class DR4B implements Subsystem {
     public double position = 0;
 
     //positions
-    public static double UPPER_SPECIMEN = 0.45;
+    public static double UPPER_SPECIMEN = 0.7;
     public static double UPPER_SPECIMEN_DROP = 0.3;
     public static double LOWER_SPECIMEN = .0;
-    public static double UPPER_BASKET = 1.1;
-    public static double LOWER_BASKET = 0;
-    public static double CLIP_HEIGHT = 0.1;
+    public static double UPPER_BASKET = 1.22;
+    public static double LOWER_BASKET = 0.55;
+    public static double CLIP_HEIGHT = 0.15;
     public static double BASE = 0.0;
     public static double OBSERVATION = BASE;
 
