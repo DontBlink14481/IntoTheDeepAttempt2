@@ -66,7 +66,7 @@ public class IntakeControl implements Control {
 //            arm.setSpinner(-gp2.right_trigger);
 //        }
 
-        slides.setPosition(slides.position - slidesSpeed * gp2.left_stick_y);
+        slides.setPosition(slides.position - slidesSpeed * gp2.right_stick_y);
         slidesIn.update(gp2.left_bumper);
 
         extendToggle.update(gp2.right_bumper);
@@ -79,8 +79,8 @@ public class IntakeControl implements Control {
 //        swivelLeft.update(gp2.left_trigger > 0.1);
 //        swivelRight.update(gp2.right_trigger > 0.1);
 
-        if(gp2.right_stick_x *gp2.right_stick_x + gp2.right_stick_y * gp2.right_stick_y > (deadzone * deadzone)){
-            arm.setSwivel(Range.clip(IntakeArm.joystickToSwivel(gp2.right_stick_x, gp2.right_stick_y), 0, 1));
+        if(gp2.left_stick_x *gp2.left_stick_x + gp2.left_stick_y * gp2.left_stick_y > (deadzone * deadzone)){
+            arm.setSwivel(Range.clip(IntakeArm.joystickToSwivel(gp2.left_stick_x, -gp2.left_stick_y), 0, 1));
         }
         else arm.setSwivel(IntakeArm.SWIVEL_FLAT);
 

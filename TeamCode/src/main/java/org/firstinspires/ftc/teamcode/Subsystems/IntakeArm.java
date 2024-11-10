@@ -69,12 +69,15 @@ public class IntakeArm implements Subsystem {
     }
 
     public static double joystickToSwivel(double x, double y){
-        double angle = Range.scale(Math.toDegrees(Math.atan2(x, y)) - 90, -270, 90, -180, 180);
-        return swivelAngleToPos(angle + ((angle < 0) ? 180 : 0));
+        double angle = Math.toDegrees(Math.atan2(-x, y));
+        while (angle > 90 || angle < -90){
+            angle = angle - Math.signum(angle)*180;
+        }
+        return swivelAngleToPos(angle);
     }
 
     public static double swivelAngleToPos(double angle){
-        return ZERO_ANGLE + (ZERO_ANGLE - SWIVEL_FLAT)*angle/90;
+        return SWIVEL_FLAT + (SWIVEL_FLAT - ZERO_ANGLE)*angle/90;
     }
 
 

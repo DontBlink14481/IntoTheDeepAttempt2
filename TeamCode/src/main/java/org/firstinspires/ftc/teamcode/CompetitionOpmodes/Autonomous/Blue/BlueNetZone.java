@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.sfdev.assembly.state.StateMachine;
 import com.sfdev.assembly.state.StateMachineBuilder;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.CompetitionOpmodes.TeleOperated.Grootle;
 import org.firstinspires.ftc.teamcode.Subsystems.DR4B;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeArm;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
@@ -25,14 +27,13 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 @Autonomous
 public class BlueNetZone extends LinearOpMode {
     Robot robot;
-    MultipleTelemetry telemetry;
     StateMachine blueNetZoneAuto;
     StateMachine collapseMachine;
     StateMachine transferMachine;
     StateMachine intakeMachine;
 
     public static Pose startPose = (new Pose(4.745, 88.250, Math.toRadians(180))).convertToFTC();
-    public static Pose rungPoint = (new Pose(29.891, 78.761, Math.toRadians(180))).convertToFTC();
+    public static Pose rungPoint = (new Pose(20, 78.761, Math.toRadians(180))).convertToFTC();
     public static Pose firstSample = (new Pose(28.468, 121.226, Math.toRadians(20))).convertToFTC();
     public static Pose secondSample = (new Pose(27.519, 130.715, Math.toRadians(0))).convertToFTC();
     public static Pose thirdSample = (new Pose(25.621, 135.222, Math.toRadians(15))).convertToFTC();
@@ -70,14 +71,14 @@ public class BlueNetZone extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        initialize();
+        initialize(telemetry);
 
         waitForStart();
         if (isStopRequested()) return;
 
         blueNetZoneAuto.start();
 
-        while (robot.drive.drive.isBusy()) {
+        while (opModeIsActive()) {
             Util.writePosToFile(robot);
             telemetry.addData("Auto State", blueNetZoneAuto.getStateEnum());
 
@@ -91,12 +92,13 @@ public class BlueNetZone extends LinearOpMode {
         }
     }
 
-    public void initialize() {
-        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+    public void initialize(Telemetry t) {
+        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), t);
         robot = new Robot(hardwareMap, telemetry, startPose, true, gamepad1, gamepad2);
         collapseMachine = StateMachines.getCollapseMachine(robot, telemetry);
         transferMachine = StateMachines.getTransferMachine(robot, telemetry);
         intakeMachine = StateMachines.getIntakingMachine(robot, telemetry);
+        robot.toInit();
 
         hangSpeciman =
                 new PathBuilder()
@@ -135,6 +137,8 @@ public class BlueNetZone extends LinearOpMode {
                 .onEnter(() -> {
                     robot.dr4b.setPosition(DR4B.UPPER_SPECIMEN);
                     robot.drive.drive.followPath(hangSpeciman);
+                    robot.outtake.setArm(Outtake.ARM_SPECIMEN);
+                    robot.outtake.setWrist(Outtake.WRIST_SPECIMEN);
                 })
                 .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.COLLAPSE)
                 .onExit(() -> {
