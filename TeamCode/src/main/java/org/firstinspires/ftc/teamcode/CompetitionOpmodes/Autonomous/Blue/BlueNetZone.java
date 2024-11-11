@@ -32,14 +32,16 @@ public class BlueNetZone extends LinearOpMode {
     StateMachine transferMachine;
     StateMachine intakeMachine;
 
-    public static Pose startPose = (new Pose(4.745, 88.250, Math.toRadians(180))).convertToFTC();
-    public static Pose rungPoint = (new Pose(20, 78.761, Math.toRadians(180))).convertToFTC();
-    public static Pose firstSample = (new Pose(28.468, 121.226, Math.toRadians(20))).convertToFTC();
+    MultipleTelemetry multipleTelemetry;
+
+    public static Pose startPose = (new Pose(9.015, 88.488, Math.toRadians(180))).convertToFTC();
+    public static Pose rungPoint = (new Pose(25.110, 82.082, Math.toRadians(180))).convertToFTC();
+    public static Pose firstSample = (new Pose(28.468, 121.226, Math.toRadians(40))).convertToFTC();
     public static Pose secondSample = (new Pose(27.519, 130.715, Math.toRadians(0))).convertToFTC();
     public static Pose thirdSample = (new Pose(25.621, 135.222, Math.toRadians(15))).convertToFTC();
     public static Pose highBasket = (new Pose(17.081, 130.715, Math.toRadians(315))).convertToFTC();
     public static Pose ascentZonePark = (new Pose(63.815, 94.418, Math.toRadians(90))).convertToFTC();
-    public static Point constBezierCurvePoint = new Point(4.270, 114.820, Point.CARTESIAN);
+    public static Point constBezierCurvePoint = new Point(5, 108.178, Point.CARTESIAN).convertToFTC();
 
 
     Pose[] samples = {firstSample, secondSample, thirdSample};
@@ -71,34 +73,13 @@ public class BlueNetZone extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        initialize(telemetry);
-
-        waitForStart();
-        if (isStopRequested()) return;
-
-        blueNetZoneAuto.start();
-
-        while (opModeIsActive()) {
-            Util.writePosToFile(robot);
-            telemetry.addData("Auto State", blueNetZoneAuto.getStateEnum());
-
-            robot.update();
-            blueNetZoneAuto.update();
-            telemetry.update();
-            if (blueNetZoneAuto.getStateEnum() == blueNetZoneStates.STOP) {
-                blueNetZoneAuto.stop();
-                return;
-            }
-        }
-    }
-
-    public void initialize(Telemetry t) {
-        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), t);
+        multipleTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot = new Robot(hardwareMap, telemetry, startPose, true, gamepad1, gamepad2);
         collapseMachine = StateMachines.getCollapseMachine(robot, telemetry);
         transferMachine = StateMachines.getTransferMachine(robot, telemetry);
         intakeMachine = StateMachines.getIntakingMachine(robot, telemetry);
         robot.toInit();
+        robot.outtake.setClaw(Outtake.CLAW_GRAB);
 
         hangSpeciman =
                 new PathBuilder()
@@ -106,7 +87,7 @@ public class BlueNetZone extends LinearOpMode {
                                 new BezierLine(startPose.getAsPoint(),
                                         rungPoint.getAsPoint()))
                         .setConstantHeadingInterpolation(rungPoint.getHeading())
-                    .build();
+                        .build();
         travelToSample =
                 new PathBuilder()
                         .addPath(
@@ -142,7 +123,6 @@ public class BlueNetZone extends LinearOpMode {
                 })
                 .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.COLLAPSE)
                 .onExit(() -> {
-                    robot.drive.drive.holdCurrentPosition();
                     previousState = blueNetZoneStates.HANG_SPECIMAN;
                 })
 
@@ -183,13 +163,15 @@ public class BlueNetZone extends LinearOpMode {
                     robot.drive.drive.followPath(travelToSample);
                 })
                 .loop(() -> {
-                    Point currentPoint = new Point(robot.drive.drive.getPose().getX(), robot.drive.drive.getPose().getY());
-                    if (currentPoint.distanceFrom(firstSample.getAsPoint()) <= 20) {
+                    Point currentPoint = robot.drive.drive.getPose().getAsPoint();
+                    if (currentPoint.distanceFrom(firstSample.getAsPoint()) <= 5 && robot.drive.drive.getPose().getHeading() <= Math.toRadians(50)) {
                         robot.intakeSlides.setPosition(IntakeSlides.PARTIAL);
+                        robot.intakeArm.setArm(IntakeArm.FLOAT_ARM);
+                        robot.intakeArm.setSwivel(IntakeArm.swivelAngleToPos(Math.toDegrees(robot.drive.drive.getTotalHeading())));
                     }
                 })
                 .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.INTAKE)
-                .onExit(() -> previousState = blueNetZoneStates.PICK_SAMPLE)
+                .onExit(() -> previousState = blueNetZoneStates.TRAVEL_TO_SAMPLES)
 
                 .state(blueNetZoneStates.PICK_SAMPLE)
                 .onEnter(() -> {
@@ -216,7 +198,7 @@ public class BlueNetZone extends LinearOpMode {
                                                     highBasket.getAsPoint()
                                             )
                                     )
-                                    .setLinearHeadingInterpolation(samples[sampleCounter].getHeading(), highBasket.getHeading())
+                                    .setLinearHeadingInterpolation(robot.drive.drive.getTotalHeading(), highBasket.getHeading())
                                     .build();
                     robot.outtake.setArm(Outtake.ARM_BASKET);
                     robot.drive.drive.followPath(dropSample);
@@ -237,13 +219,29 @@ public class BlueNetZone extends LinearOpMode {
                 })
                 .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.STOP)
                 .onExit(() -> {
-                    robot.drive.drive.holdCurrentPosition();
                     previousState = blueNetZoneStates.PARK;
                 })
 
                 .state(blueNetZoneStates.STOP)
-                .loop(() -> telemetry.addLine("AUTO COMPLETED"))
+                .loop(() -> multipleTelemetry.addLine("AUTO COMPLETED"))
                 .build();
 
+        waitForStart();
+        if (isStopRequested()) return;
+
+        blueNetZoneAuto.start();
+
+        while (opModeIsActive()) {
+            multipleTelemetry.addData("Auto State", blueNetZoneAuto.getStateEnum());
+//            robot.drive.drive.telemetryDebug(multipleTelemetry);
+            robot.update();
+            blueNetZoneAuto.update();
+            multipleTelemetry.update();
+            if (blueNetZoneAuto.getStateEnum() == blueNetZoneStates.STOP) {
+                blueNetZoneAuto.stop();
+                blueNetZoneAuto.reset();
+                return;
+            }
+        }
     }
 }

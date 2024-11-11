@@ -172,6 +172,9 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
     @Override
     public void setPose(Pose setPose) {
         displacementPose = MathFunctions.subtractPoses(setPose, startPose);
+        resetIMU();
+        displacementPose.setHeading(setPose.getHeading());
+        totalHeading = setPose.getHeading();
         resetEncoders();
     }
 
