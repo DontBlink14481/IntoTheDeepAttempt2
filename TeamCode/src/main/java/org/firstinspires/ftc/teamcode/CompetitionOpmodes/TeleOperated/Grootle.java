@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.CompetitionOpmodes.TeleOperated;
 
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,6 +23,9 @@ import org.firstinspires.ftc.teamcode.TeleControl.IntakeControl;
 import org.firstinspires.ftc.teamcode.TeleControl.OuttakeControl;
 import org.firstinspires.ftc.teamcode.Util.StateMachines;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // our controller operated mode
 
 @TeleOp
@@ -32,6 +37,7 @@ public class Grootle extends LinearOpMode {
     }
 
     public static double DROP_DELAY = 0.3;
+    private HashMap<Boolean, String> buttonMap;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -49,6 +55,13 @@ public class Grootle extends LinearOpMode {
         OuttakeControl oc = new OuttakeControl(r, gamepad1, gamepad2);
         DR4BControl drbc = new DR4BControl(r, gamepad1, gamepad2);
 
+        // (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right || gamepad2.touchpad)
+        buttonMap = new HashMap<Boolean, String>();
+        buttonMap.put(gamepad1.dpad_up, "gamepad2.dpad_up");
+        buttonMap.put(gamepad1.dpad_down, "gamepad2.dpad_down");
+        buttonMap.put(gamepad1.dpad_left, "gamepad2.dpad_left");
+        buttonMap.put(gamepad2.dpad_right, "gamepad2.dpad_right");
+        buttonMap.put(gamepad1.touchpad, "gamepad1.touchpad");
 
 
         StateMachine machine = new StateMachineBuilder()
@@ -99,12 +112,15 @@ public class Grootle extends LinearOpMode {
                     ic.resetToggle();
                 })
                 .loop(transferMachine::update)
-                .transition(() -> (transferMachine.getState() == StateMachines.TransferStates.FINISHED) && (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right || gamepad2.touchpad))
+                .transition(() -> (transferMachine.getState() == StateMachines.TransferStates.FINISHED) && (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right || gamepad2.touchpad), () ->{
+                })
                 .transition(() -> gamepad2.triangle, TeleStates.INTAKE_2, () ->{
 //                    r.intakeSlides.setPosition(IntakeSlides.PARTIAL);
                     r.outtake.toInit();
                 })
                 .onExit(() -> {
+                    updateButtonMap();
+                    telemetry.addData("butotn map bad", buttonMap);
                     transferMachine.stop();
                     transferMachine.reset();
                     oc.grabToggle = true;
@@ -112,6 +128,7 @@ public class Grootle extends LinearOpMode {
 
                 .state(TeleStates.OUTTAKE)
                 .onEnter(() -> {
+//                    oc.transferButtonMap(buttonMap);
                     oc.grabToggle = true;
                     r.dr4b.setPosition(DR4B.OBSERVATION);
                     oc.outtakeState = OuttakeControl.OuttakeStates.OBSERVATION;
@@ -147,14 +164,25 @@ public class Grootle extends LinearOpMode {
 
         machine.start();
         while (opModeIsActive()) {
+            telemetry.addData("button Map:", buttonMap);
             telemetry.addData("Tele State", machine.getState());
             telemetry.addData("Intake slide SET spositoin", r.intakeSlides.position);
             telemetry.addData("Intake slide curr position", r.intakeSlides.getRealPosition());
-            telemetry.update();
 
             machine.update();
             dc.update();
             r.update();
+            telemetry.update();
         }
+    }
+
+    public void updateButtonMap() {
+        buttonMap = new HashMap<Boolean, String>();
+        buttonMap.put(gamepad1.dpad_up, "gamepad2.dpad_up");
+        buttonMap.put(gamepad1.dpad_down, "gamepad2.dpad_down");
+        buttonMap.put(gamepad1.dpad_left, "gamepad2.dpad_left");
+        buttonMap.put(gamepad2.dpad_right, "gamepad2.dpad_right");
+        buttonMap.put(gamepad1.touchpad, "gamepad1.touchpad");
+        telemetry.addData("UPDATE DTHE BUTTOM MAP", buttonMap);
     }
 }

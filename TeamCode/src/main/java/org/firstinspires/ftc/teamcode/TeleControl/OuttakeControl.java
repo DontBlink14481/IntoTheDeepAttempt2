@@ -18,8 +18,12 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Util.FallingEdge;
 
+import java.util.HashMap;
+import java.util.Objects;
+
 @Config
 public class OuttakeControl implements Control {
+
 
     public enum OuttakeStates {
         OBSERVATION, RUNG, BASKET
@@ -96,6 +100,23 @@ public class OuttakeControl implements Control {
         basket.updateOnPress(gp2.dpad_left || gp2.dpad_up);
         observation.updateOnPress(gp2.touchpad);
     }
+
+    public void transferButtonMap(HashMap<Boolean, String> buttonMap) {
+        switch(Objects.requireNonNull(buttonMap.get(Boolean.TRUE))) {
+            case "gamepad2.dpad_up":
+            case "gamepad2.dpad_left":
+                outtakeState = BASKET;
+                break;
+            case "gamepad2.dpad_down":
+            case "gamepad2.dpad_right":
+                outtakeState = RUNG;
+                break;
+            case "gamepad2.touchpad":
+                outtakeState = OBSERVATION;
+                break;
+        }
+    }
+
 
     @Override
     public void addTelemetry(Telemetry telemetry) {

@@ -42,8 +42,8 @@ public class StateMachines {
     public static double RELEASE_TIME = 0.2;
     public static double TRANSFER_BREAK = 0.05;
     public static double TRAVEL_TIME = 0.2;
-    public static double SECOND_BREAK = 0.05;
-    public static double ARM_UP = 0.4;
+    public static double SECOND_BREAK = 0.2;
+    public static double ARM_UP = 0.2;
 
 
     public static StateMachine getTransferMachine(Robot robot, Telemetry telemetry) {
