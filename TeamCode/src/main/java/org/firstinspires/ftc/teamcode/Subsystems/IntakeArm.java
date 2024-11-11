@@ -19,13 +19,15 @@ public class IntakeArm implements Subsystem {
     public static ColorSensor colorSensor;
     public static Servo swivel;
 
-    public static double CLAW_OPEN = 0.3;
+    public static double CLAW_OPEN = 0.2;
 
-    public static double ARM_GRAB = 0.5;
+    public static double ARM_GRAB = 0.48;
     public static double ARM_TRANSFER = 0.18;
     public static double FLOAT_ARM = 0.42;
 
-    public static double CLAW_GRAB = 0.46;
+    public static double ARM_BUMP = 0.53;
+
+    public static double CLAW_GRAB = 0.445;
     public static double SWIVEL_FLAT = 0.44;
     public static double SWIVEL_LEFT = 0.6;
     public static double SWIVEL_RIGHT = 0.3;

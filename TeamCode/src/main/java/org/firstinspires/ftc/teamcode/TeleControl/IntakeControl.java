@@ -73,16 +73,16 @@ public class IntakeControl implements Control {
 
         swapArm.update(gp2.circle);
 
-        if(!cancelArm) arm.setArm(armUp ? IntakeArm.FLOAT_ARM : IntakeArm.ARM_GRAB);
+        if(!cancelArm) arm.setArm(armUp ? IntakeArm.FLOAT_ARM : IntakeArm.ARM_BUMP);
 
         flat.update(gp2.touchpad);
         swivelLeft.update(gp2.left_trigger > 0.1);
         swivelRight.update(gp2.right_trigger > 0.1);
 
-        if(gp2.right_stick_x *gp2.right_stick_x + gp2.right_stick_y * gp2.right_stick_y > (deadzone * deadzone)){
+        /*if(gp2.right_stick_x *gp2.right_stick_x + gp2.right_stick_y * gp2.right_stick_y > (deadzone * deadzone)){
             arm.setSwivel(Range.clip(IntakeArm.joystickToSwivel(gp2.right_stick_x, -gp2.right_stick_y), 0, 1));
         }
-        else arm.setSwivel(IntakeArm.SWIVEL_FLAT);
+        else arm.setSwivel(IntakeArm.SWIVEL_FLAT);*/
 
 
     }
