@@ -6,9 +6,9 @@ import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.ARM_SPECIMEN;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.WRIST_BASKET;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.WRIST_OBSERVATION;
 import static org.firstinspires.ftc.teamcode.Subsystems.Outtake.WRIST_SPECIMEN;
-import static org.firstinspires.ftc.teamcode.TeleControl.OuttakeControl.OuttakeStates.BASKET;
-import static org.firstinspires.ftc.teamcode.TeleControl.OuttakeControl.OuttakeStates.OBSERVATION;
-import static org.firstinspires.ftc.teamcode.TeleControl.OuttakeControl.OuttakeStates.RUNG;
+import static org.firstinspires.ftc.teamcode.TeleControl.OuttakeControl.OuttakeStates.*;
+
+import android.util.Pair;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -18,12 +18,13 @@ import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Util.FallingEdge;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Config
 public class OuttakeControl implements Control {
-
 
     public enum OuttakeStates {
         OBSERVATION, RUNG, BASKET
@@ -101,26 +102,32 @@ public class OuttakeControl implements Control {
         observation.updateOnPress(gp2.touchpad);
     }
 
-    public void transferButtonMap(HashMap<Boolean, String> buttonMap) {
-        switch(Objects.requireNonNull(buttonMap.get(Boolean.TRUE))) {
-            case "gamepad2.dpad_up":
-            case "gamepad2.dpad_left":
-                outtakeState = BASKET;
-                break;
-            case "gamepad2.dpad_down":
-            case "gamepad2.dpad_right":
-                outtakeState = RUNG;
-                break;
-            case "gamepad2.touchpad":
-                outtakeState = OBSERVATION;
-                break;
+    @Override
+    public void addTelemetry(Telemetry t) {
+
+    }
+
+    public void transferButtonMap(HashMap<String, String> buttonMap) {
+        for (Map.Entry<String, String> pair : buttonMap.entrySet()) {
+            if (pair.getValue().equals("true")) {
+                switch(pair.getKey()) {
+                    case "gamepad2.dpad_up":
+                    case "gamepad2.dpad_left":
+                        outtakeState = BASKET;
+                        break;
+                    case "gamepad2.dpad_down":
+                    case "gamepad2.dpad_right":
+                        outtakeState = RUNG;
+                        break;
+                    case "gamepad2.touchpad":
+                        outtakeState    = OBSERVATION;
+                        break;
+                }
+            }
         }
     }
 
 
-    @Override
-    public void addTelemetry(Telemetry telemetry) {
 
-    }
 
 }

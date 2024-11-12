@@ -29,6 +29,7 @@ public class IntakeControl implements Control {
     FallingEdge swivelLeft = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_LEFT));
     FallingEdge swivelRight = new FallingEdge(() -> arm.setSwivel(IntakeArm.SWIVEL_RIGHT));
 
+    FallingEdge clawSemiOpen = new FallingEdge(() -> arm.setClaw(IntakeArm.CLAW_SEMI));
 
     FallingEdge slidesIn = new FallingEdge(() -> {
         slides.setPosition(IntakeSlides.IN);
@@ -66,8 +67,15 @@ public class IntakeControl implements Control {
 //            arm.setSpinner(-gp2.right_trigger);
 //        }
 
-        slides.setPosition(slides.position - slidesSpeed * gp2.left_stick_y);
+        if(gp2.left_stick_y > 0) {
+            slides.setPosition(slides.position - slidesSpeed * gp2.left_stick_y);
+            slides.motionProfile = false;
+        }
+        else{
+            slides.motionProfile = true;
+        }
         slidesIn.update(gp2.left_bumper);
+        clawSemiOpen.update(gp1.circle);
 
         extendToggle.update(gp2.right_bumper);
 

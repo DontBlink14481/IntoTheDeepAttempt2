@@ -30,7 +30,7 @@ public class Outtake implements Subsystem {
 
     // wrist stuff
     public Servo wrist; // up & down tilt
-    public static double WRIST_TRANSFER =  .15; //.15
+    public static double WRIST_TRANSFER =  .33; //.15
     public static double WRIST_OVER_90 =  .53; //.15 CHANGENNGEGE
     public static double WRIST_MID = 0.25;
     public static double WRIST_OVER_90F = 0;
@@ -53,7 +53,7 @@ public class Outtake implements Subsystem {
 
 
     public static double ARM_OUT_INTER = 0.3;
-    public static double WRIST_OUT_INTER = 0.1;
+    public static double WRIST_OUT_INTER = 0.33;
 
 
     //arm mp stuff

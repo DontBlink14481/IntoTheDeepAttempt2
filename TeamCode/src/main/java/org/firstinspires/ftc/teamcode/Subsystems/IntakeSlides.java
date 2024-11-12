@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Util.MotionProfile;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 
 @Config
@@ -18,11 +19,18 @@ public class IntakeSlides implements Subsystem {
     VoltageSensor voltageSensor;
     private static final double TICKS_PER_REV = 145.1;//TODO: Update
     private static final double GEAR_RATIO = 1.0;
+    public double startTime, startPos;
+
+    public boolean motionProfile = false;
     public static double kp = 0.0007;
     public static double kd = 0.00004;
     public static double ki = 0;
     public double totalI = 0;
     public static double kf = 0.0;
+    public static double ka = 0;
+    public static double kv = 0;
+    public static double maxAccel = 0;
+    public static double maxVel = 0;
     private double prev_error;
     private double prev_time;
     public static double admissible = 40;
@@ -43,6 +51,8 @@ public class IntakeSlides implements Subsystem {
     public IntakeSlides(HardwareMap map) {
         this(map, true);
     }
+
+    public MotionProfile currentMp = null;
 
     public IntakeSlides(HardwareMap map, boolean resetEncoder){
         slideMotorR = map.get(DcMotorEx.class, "re");
@@ -82,12 +92,19 @@ public class IntakeSlides implements Subsystem {
         double curr_time = System.nanoTime() / 1E9; // nano -> sec
         double curr_error = position - getRealPosition();
 
+        double mp = 0;
+        if (motionProfile) {
+            currentMp = MotionProfile.trapMotion(curr_time - startTime, maxAccel,maxVel, startPos, position);
+            curr_error = currentMp.goalPosition - getVoltage();
+            mp += ka * currentMp.goalAcceleration + kv * currentMp.goalVelocity;
+        }
+
         double pp = kp * curr_error;
         double pd = kd * (curr_error - prev_error) / (curr_time - prev_time);
         double pf = kf * Math.signum(curr_error);
         totalI += ki * curr_error * (curr_time - prev_time);
 
-        power = (pp + pd + pf + totalI);
+        power = (pp + pd + pf + totalI + mp);
 
         prev_error = curr_error;
         prev_time = curr_time;
@@ -122,8 +139,13 @@ public class IntakeSlides implements Subsystem {
     }
 
     public void setPosition(double position) {
-        rawPower = false;
-        this.position = Range.clip(position, IN, EXTENDED);
+        if(position != this.position){
+            rawPower = false;
+            this.position = Range.clip(position, IN, EXTENDED);
+            startTime = System.nanoTime()/1E9;
+            startPos = getRealPosition();
+        }
+
     }
 
     public void slidesNeutral() {
