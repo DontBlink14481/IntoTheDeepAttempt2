@@ -26,7 +26,7 @@ public class SlidesTuner extends LinearOpMode {
         IntakeSlides d = new IntakeSlides(hardwareMap);
 
         waitForStart();
-
+        d.motionProfile = true;
         while (opModeIsActive()) {
             telemetry.addData("ref", position);
             d.setPosition(position);

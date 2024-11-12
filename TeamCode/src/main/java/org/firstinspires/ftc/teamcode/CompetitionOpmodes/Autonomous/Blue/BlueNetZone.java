@@ -7,14 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.sfdev.assembly.state.StateMachine;
 import com.sfdev.assembly.state.StateMachineBuilder;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.CompetitionOpmodes.TeleOperated.Grootle;
 import org.firstinspires.ftc.teamcode.Subsystems.DR4B;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeArm;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeSlides;
 import org.firstinspires.ftc.teamcode.Subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.TeleControl.IntakeControl;
 import org.firstinspires.ftc.teamcode.Util.StateMachines;
 import org.firstinspires.ftc.teamcode.Util.Util;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
@@ -34,19 +31,21 @@ public class BlueNetZone extends LinearOpMode {
 
     MultipleTelemetry multipleTelemetry;
 
-    public static Pose startPose = (new Pose(9.015, 88.488, Math.toRadians(180))).convertToFTC();
-    public static Pose rungPoint = (new Pose(25.110, 82.082, Math.toRadians(180))).convertToFTC();
-    public static Pose firstSample = (new Pose(28.468, 121.226, Math.toRadians(40))).convertToFTC();
+    public static Pose startPose = (new Pose(9.015, 90, Math.toRadians(180))).convertToFTC();
+    public static Pose start_hangPoint = (new Pose(23.5, 82, Math.toRadians(180))).convertToFTC();
+    public static Pose rungPoint = (new Pose(26, 82.082, Math.toRadians(180))).convertToFTC();
+    public static Pose firstSample = (new Pose(28.468, 121.226, Math.toRadians(-30))).convertToFTC();
     public static Pose secondSample = (new Pose(27.519, 130.715, Math.toRadians(0))).convertToFTC();
     public static Pose thirdSample = (new Pose(25.621, 135.222, Math.toRadians(15))).convertToFTC();
-    public static Pose highBasket = (new Pose(17.081, 130.715, Math.toRadians(315))).convertToFTC();
+    public static Pose highBasket = (new Pose(20, 130.715, Math.toRadians(315))).convertToFTC();
     public static Pose ascentZonePark = (new Pose(63.815, 94.418, Math.toRadians(90))).convertToFTC();
     public static Point constBezierCurvePoint = new Point(5, 108.178, Point.CARTESIAN).convertToFTC();
 
 
-    Pose[] samples = {firstSample, secondSample, thirdSample};
+    Pose[] samples = {secondSample, firstSample, thirdSample};
 
     PathChain hangSpeciman;
+    PathChain startHang;
     PathChain pickSample;
     PathChain dropSample;
     PathChain travelToSample;
@@ -56,12 +55,14 @@ public class BlueNetZone extends LinearOpMode {
     boolean startAuto = false;
     enum blueNetZoneStates{
         START,
-        HANG_SPECIMAN,
+        START_HANG,
+        HANG_SPECIMEN,
         TRAVEL_TO_SAMPLES,
         PICK_SAMPLE,
         DROP_SAMPLE,
         PARK,
         COLLAPSE,
+        COLLAPSE_TIME,
         TRANSFER,
         INTAKE,
         STOP
@@ -80,21 +81,33 @@ public class BlueNetZone extends LinearOpMode {
         intakeMachine = StateMachines.getIntakingMachine(robot, telemetry);
         robot.toInit();
         robot.outtake.setClaw(Outtake.CLAW_GRAB);
+        robot.intakeArm.setArm(IntakeArm.ARM_TRANSFER + 0.05);
 
-        hangSpeciman =
+
+        startHang =
                 new PathBuilder()
                         .addPath(
                                 new BezierLine(startPose.getAsPoint(),
                                         rungPoint.getAsPoint()))
+                        .setConstantHeadingInterpolation(startPose.getHeading())                        .setPathEndVelocityConstraint(0.03)
+                        .setPathEndVelocityConstraint(0.05)
+                        .build();
+        hangSpeciman =
+                new PathBuilder()
+                        .addPath(
+                                new BezierLine(start_hangPoint.getAsPoint(),
+                                        rungPoint.getAsPoint())
+                        )
                         .setConstantHeadingInterpolation(rungPoint.getHeading())
+                        .setPathEndVelocityConstraint(0.03)
                         .build();
         travelToSample =
                 new PathBuilder()
                         .addPath(
                                 new BezierCurve(rungPoint.getAsPoint(),
                                         constBezierCurvePoint,
-                                        firstSample.getAsPoint()))
-                        .setLinearHeadingInterpolation(rungPoint.getHeading(), firstSample.getHeading())
+                                        samples[0].getAsPoint()))
+                        .setLinearHeadingInterpolation(rungPoint.getHeading(), samples[0].getHeading())
                         .build();
 
         parkAscentZone =
@@ -111,26 +124,37 @@ public class BlueNetZone extends LinearOpMode {
         blueNetZoneAuto = new StateMachineBuilder()
                 .state(blueNetZoneStates.START)
                 .onEnter(() -> startAuto = true)
-                .transition(() -> startAuto, blueNetZoneStates.HANG_SPECIMAN)
+                .transition(() -> startAuto, blueNetZoneStates.START_HANG)
                 .onExit(() -> previousState = blueNetZoneStates.START)
 
-                .state(blueNetZoneStates.HANG_SPECIMAN)
+                .state(blueNetZoneStates.START_HANG)
+                .onEnter(() -> {
+                    robot.drive.drive.followPath(startHang);
+                })
+                .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.HANG_SPECIMEN)
+                .onExit(() -> {
+                    robot.drive.drive.holdCurrentPosition();
+                })
+
+                .state(blueNetZoneStates.HANG_SPECIMEN)
                 .onEnter(() -> {
                     robot.dr4b.setPosition(DR4B.UPPER_SPECIMEN);
-                    robot.drive.drive.followPath(hangSpeciman);
+                })
+                .transition(() -> Util.isCloseEnough(robot.dr4b.getAngle(), robot.dr4b.getPosition(), DR4B.acceptable), blueNetZoneStates.COLLAPSE_TIME)
+                .onExit(() -> {
                     robot.outtake.setArm(Outtake.ARM_SPECIMEN);
                     robot.outtake.setWrist(Outtake.WRIST_SPECIMEN);
+                    previousState = blueNetZoneStates.HANG_SPECIMEN;
                 })
-                .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.COLLAPSE)
-                .onExit(() -> {
-                    previousState = blueNetZoneStates.HANG_SPECIMAN;
-                })
+
+                .state(blueNetZoneStates.COLLAPSE_TIME)
+                .transitionTimed(1.5, blueNetZoneStates.COLLAPSE)
 
                 .state(blueNetZoneStates.COLLAPSE)
                 .onEnter(() -> collapseMachine.start())
                 .loop(() -> collapseMachine.update())
                 .transition(() -> collapseMachine.getStateEnum() == StateMachines.CollapseStates.FINISHED && sampleCounter >= 2, blueNetZoneStates.PARK)
-                .transition(() -> collapseMachine.getStateEnum() == StateMachines.CollapseStates.FINISHED && previousState == blueNetZoneStates.HANG_SPECIMAN, blueNetZoneStates.TRAVEL_TO_SAMPLES)
+                .transition(() -> collapseMachine.getStateEnum() == StateMachines.CollapseStates.FINISHED && previousState == blueNetZoneStates.HANG_SPECIMEN, blueNetZoneStates.STOP) // TODO:
                 .transition(() -> collapseMachine.getStateEnum() == StateMachines.CollapseStates.FINISHED && sampleCounter < 2 && previousState == blueNetZoneStates.DROP_SAMPLE, blueNetZoneStates.PICK_SAMPLE)
                 .onExit(() -> {
                     collapseMachine.stop();
@@ -164,7 +188,7 @@ public class BlueNetZone extends LinearOpMode {
                 })
                 .loop(() -> {
                     Point currentPoint = robot.drive.drive.getPose().getAsPoint();
-                    if (currentPoint.distanceFrom(firstSample.getAsPoint()) <= 5 && robot.drive.drive.getPose().getHeading() <= Math.toRadians(50)) {
+                    if (currentPoint.distanceFrom(samples[0].getAsPoint()) <= 5) {
                         robot.intakeSlides.setPosition(IntakeSlides.PARTIAL);
                         robot.intakeArm.setArm(IntakeArm.FLOAT_ARM);
                         robot.intakeArm.setSwivel(IntakeArm.swivelAngleToPos(Math.toDegrees(robot.drive.drive.getTotalHeading())));
@@ -185,7 +209,7 @@ public class BlueNetZone extends LinearOpMode {
                     robot.drive.drive.followPath(pickSample);
                 })
                 .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.INTAKE)
-                .transition(() -> sampleCounter >= 2, blueNetZoneStates.COLLAPSE)
+                .transition(() -> sampleCounter >= 2, blueNetZoneStates.COLLAPSE_TIME)
                 .onExit(() -> previousState = blueNetZoneStates.PICK_SAMPLE)
 
                 .state(blueNetZoneStates.DROP_SAMPLE)
