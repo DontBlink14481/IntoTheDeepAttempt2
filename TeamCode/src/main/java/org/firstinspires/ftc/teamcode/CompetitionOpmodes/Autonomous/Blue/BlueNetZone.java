@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.CompetitionOpmodes.Autonomous.Blue;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathBuilder;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 
+@Config
 @Autonomous
 public class BlueNetZone extends LinearOpMode {
     Robot robot;
@@ -32,8 +34,8 @@ public class BlueNetZone extends LinearOpMode {
     MultipleTelemetry multipleTelemetry;
 
     public static Pose startPose = (new Pose(9.015, 90, Math.toRadians(180))).convertToFTC();
-    public static Pose start_hangPoint = (new Pose(23.5, 82, Math.toRadians(180))).convertToFTC();
-    public static Pose rungPoint = (new Pose(26, 82.082, Math.toRadians(180))).convertToFTC();
+    public static Pose start_hangPoint = (new Pose(28, 82, Math.toRadians(180))).convertToFTC();
+    public static Pose rungPoint = (new Pose(32, 82.082, Math.toRadians(180))).convertToFTC();
     public static Pose firstSample = (new Pose(28.468, 121.226, Math.toRadians(-30))).convertToFTC();
     public static Pose secondSample = (new Pose(27.519, 130.715, Math.toRadians(0))).convertToFTC();
     public static Pose thirdSample = (new Pose(25.621, 135.222, Math.toRadians(15))).convertToFTC();
@@ -88,8 +90,8 @@ public class BlueNetZone extends LinearOpMode {
                 new PathBuilder()
                         .addPath(
                                 new BezierLine(startPose.getAsPoint(),
-                                        rungPoint.getAsPoint()))
-                        .setConstantHeadingInterpolation(startPose.getHeading())                        .setPathEndVelocityConstraint(0.03)
+                                        start_hangPoint.getAsPoint()))
+                        .setConstantHeadingInterpolation(startPose.getHeading())
                         .setPathEndVelocityConstraint(0.05)
                         .build();
         hangSpeciman =
@@ -132,9 +134,7 @@ public class BlueNetZone extends LinearOpMode {
                     robot.drive.drive.followPath(startHang);
                 })
                 .transition(() -> !robot.drive.drive.isBusy(), blueNetZoneStates.HANG_SPECIMEN)
-                .onExit(() -> {
-                    robot.drive.drive.holdCurrentPosition();
-                })
+                .onExit(() -> previousState = blueNetZoneStates.START_HANG)
 
                 .state(blueNetZoneStates.HANG_SPECIMEN)
                 .onEnter(() -> {
@@ -142,6 +142,7 @@ public class BlueNetZone extends LinearOpMode {
                 })
                 .transition(() -> Util.isCloseEnough(robot.dr4b.getAngle(), robot.dr4b.getPosition(), DR4B.acceptable), blueNetZoneStates.COLLAPSE_TIME)
                 .onExit(() -> {
+                    robot.drive.drive.followPath(hangSpeciman);
                     robot.outtake.setArm(Outtake.ARM_SPECIMEN);
                     robot.outtake.setWrist(Outtake.WRIST_SPECIMEN);
                     previousState = blueNetZoneStates.HANG_SPECIMEN;
@@ -257,6 +258,9 @@ public class BlueNetZone extends LinearOpMode {
 
         while (opModeIsActive()) {
             multipleTelemetry.addData("Auto State", blueNetZoneAuto.getStateEnum());
+            multipleTelemetry.addData("X", robot.drive.drive.getPose().getX());
+            multipleTelemetry.addData("Y", robot.drive.drive.getPose().getY());
+            multipleTelemetry.addData("Heading", robot.drive.drive.getPose().getHeading());
 //            robot.drive.drive.telemetryDebug(multipleTelemetry);
             robot.update();
             blueNetZoneAuto.update();

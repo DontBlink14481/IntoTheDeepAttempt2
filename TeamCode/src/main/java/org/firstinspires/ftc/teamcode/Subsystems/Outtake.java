@@ -30,7 +30,7 @@ public class Outtake implements Subsystem {
 
     // wrist stuff
     public Servo wrist; // up & down tilt
-    public static double WRIST_TRANSFER =  .33; //.15
+    public static double WRIST_TRANSFER =  .48; //.15
     public static double WRIST_OVER_90 =  .53; //.15 CHANGENNGEGE
     public static double WRIST_MID = 0.25;
     public static double WRIST_OVER_90F = 0;
@@ -38,7 +38,7 @@ public class Outtake implements Subsystem {
     public static double BASKET_ANGLE = 45;
 
     public static double CLAW_RELEASE = 0.6;
-    public static double CLAW_GRAB = 0.1;
+    public static double CLAW_GRAB = 0.07;
 
     private static final double armPosToAngle = 180/(ARM_FLAT_OUT - ARM_FLAT_IN); // TODO: update); // TODO; update
     private static final double wristAngleToPos = (WRIST_OVER_90 - WRIST_MID)/90; // TODO: update
@@ -47,13 +47,13 @@ public class Outtake implements Subsystem {
     public static double ARM_SPECIMEN = 0.5;
     public static double ARM_OBSERVATION = ARM_BASKET;
 
-    public static double WRIST_BASKET = 0.42;
-    public static double WRIST_SPECIMEN = 0.6;
+    public static double WRIST_BASKET = 0.79;
+    public static double WRIST_SPECIMEN = 0.9;
     public static double WRIST_OBSERVATION = WRIST_BASKET;
 
 
     public static double ARM_OUT_INTER = 0.3;
-    public static double WRIST_OUT_INTER = 0.33;
+    public static double WRIST_OUT_INTER = WRIST_TRANSFER;
 
 
     //arm mp stuff

@@ -64,15 +64,15 @@ public class IntakeControl implements Control {
 //        } else if (gp2.left_trigger != 0) {
 //            arm.setSpinner(0.5 * gp2.left_trigger);
 //        } else if(gp2.right_trigger != 0) {
-//            arm.setSpinner(-gp2.right_trigger);
+//            arm.setSpinner(-gp2.right_trig        ger);
 //        }
 
-        if(gp2.left_stick_y > 0) {
+        if(gp2.left_stick_y != 0) {
             slides.setPosition(slides.position - slidesSpeed * gp2.left_stick_y);
-            slides.motionProfile = false;
+//            slides.motionProfile = false;
         }
         else{
-            slides.motionProfile = true;
+//            slides.motionProfile = true;
         }
         slidesIn.update(gp2.left_bumper);
         clawSemiOpen.update(gp1.circle);

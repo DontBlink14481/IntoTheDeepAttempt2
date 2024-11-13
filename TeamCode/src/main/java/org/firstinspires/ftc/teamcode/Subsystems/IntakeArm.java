@@ -26,7 +26,7 @@ public class IntakeArm implements Subsystem {
     public static double ARM_TRANSFER = 0.18;
     public static double FLOAT_ARM = 0.42;
 
-    public static double ARM_BUMP = 0.49;
+    public static double ARM_BUMP = 0.46;
 
     public static double SWIVEL_FLAT = 0.44;
     public static double SWIVEL_LEFT = 0.8;

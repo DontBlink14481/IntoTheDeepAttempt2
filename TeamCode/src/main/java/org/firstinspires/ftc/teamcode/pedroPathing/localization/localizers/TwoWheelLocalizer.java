@@ -147,6 +147,8 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
     @Override
     public void setStartPose(Pose setStart) {
         startPose = setStart;
+        resetIMU();
+        totalHeading = setStart.getHeading();
     }
 
     /**
