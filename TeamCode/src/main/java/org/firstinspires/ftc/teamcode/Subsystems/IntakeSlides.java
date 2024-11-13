@@ -95,7 +95,7 @@ public class IntakeSlides implements Subsystem {
         double mp = 0;
         if (motionProfile) {
             currentMp = MotionProfile.trapMotion(curr_time - startTime, maxAccel,maxVel, startPos, position);
-            curr_error = currentMp.goalPosition - getVoltage();
+            curr_error = currentMp.goalPosition - getRealPosition();
             mp += ka * currentMp.goalAcceleration + kv * currentMp.goalVelocity;
         }
 
